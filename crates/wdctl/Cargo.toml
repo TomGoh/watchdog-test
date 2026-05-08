@@ -1,0 +1,16 @@
+[package]
+name    = "wdctl"
+version.workspace      = true
+edition.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+
+[lib]
+name = "wdctl"
+path = "src/lib.rs"
+
+[dependencies]
+nix     = { workspace = true }
+anyhow  = { workspace = true }
+log     = { workspace = true }
+libc    = "0.2"

@@ -1,0 +1,65 @@
+[ 1002.727930] [INFO] [RUST] start: WCS_EN written
+[ 1002.727939] watchdog: watchdog0: watchdog did not stop!
+[ 1002.728177] [INFO] [RUST] stop: WCS cleared
+[ 1002.728302] [INFO] [RUST] start: WCS_EN written
+[ 1002.728307] [INFO] [RUST] stop: WCS cleared
+[ 1002.728560] [INFO] [RUST] start: WCS_EN written
+[ 1002.728565] [INFO] [RUST] stop: WCS cleared
+[ 1002.728693] [INFO] [RUST] start: WCS_EN written
+[ 1002.728697] [INFO] [RUST] stop: WCS cleared
+[ 1004.729141] [INFO] [RUST] start: WCS_EN written
+[ 1004.729151] [INFO] [RUST] set_timeout: requested=30s clamped=30s WOR=750000000
+[ 1004.729171] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[ 1004.729175] [INFO] [RUST] stop: WCS cleared
+[ 1004.729306] [INFO] [RUST] start: WCS_EN written
+[ 1004.729313] [INFO] [RUST] stop: WCS cleared
+[ 1004.729463] [INFO] [RUST] start: WCS_EN written
+[ 1004.729468] [INFO] [RUST] stop: WCS cleared
+[ 1004.936943] [INFO] [RUST] start: WCS_EN written
+[ 1004.936953] watchdog: watchdog0: watchdog did not stop!
+[ 1004.937025] [INFO] [RUST] stop: WCS cleared
+[ 1004.937180] [INFO] [RUST] start: WCS_EN written
+[ 1004.937188] [INFO] [RUST] stop: WCS cleared
+[ 1004.937314] [INFO] [RUST] start: WCS_EN written
+[ 1004.937337] [INFO] [RUST] set_timeout: requested=3600s clamped=170s WOR=4250000000
+[ 1004.937356] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[ 1004.937359] [INFO] [RUST] stop: WCS cleared
+[ 1004.937482] [INFO] [RUST] start: WCS_EN written
+[ 1004.937490] [INFO] [RUST] stop: WCS cleared
+[ 1004.937667] [INFO] [RUST] start: WCS_EN written
+[ 1006.437846] [INFO] [RUST] stop: WCS cleared
+[ 1006.648610] [INFO] [RUST] start: WCS_EN written
+[ 1006.648621] [INFO] [RUST] stop: WCS cleared
+[ 1006.648769] [INFO] [RUST] start: WCS_EN written
+[ 1006.648774] [INFO] [RUST] stop: WCS cleared
+[ 1006.829327] [INFO] [RUST] start: WCS_EN written
+[ 1026.830034] [INFO] [RUST] stop: WCS cleared
+[ 1026.830435] [INFO] [RUST] start: WCS_EN written
+[ 1026.830444] [INFO] [RUST] stop: WCS cleared
+[ 1026.830634] [INFO] [RUST] start: WCS_EN written
+[ 1026.830659] [INFO] [RUST] set_timeout: requested=1s clamped=1s WOR=25000000
+[ 1026.830678] [INFO] [RUST] set_timeout: requested=5s clamped=5s WOR=125000000
+[ 1026.830696] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[ 1026.830714] [INFO] [RUST] set_timeout: requested=30s clamped=30s WOR=750000000
+[ 1026.830732] [INFO] [RUST] set_timeout: requested=60s clamped=60s WOR=1500000000
+[ 1026.830750] [INFO] [RUST] set_timeout: requested=80s clamped=80s WOR=2000000000
+[ 1026.830767] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[ 1026.830770] [INFO] [RUST] stop: WCS cleared
+[ 1026.830926] [INFO] [RUST] start: WCS_EN written
+[ 1026.830930] [INFO] [RUST] stop: WCS cleared
+[ 1026.830949] [INFO] [RUST] start: WCS_EN written
+[ 1026.830967] [INFO] [RUST] stop: WCS cleared
+[ 1026.831158] [INFO] [RUST] start: WCS_EN written
+[ 1026.831171] [INFO] [RUST] set_timeout: requested=60s clamped=60s WOR=1500000000
+[ 1026.831174] [INFO] [RUST] stop: WCS cleared
+[ 1026.831179] [INFO] [RUST] start: WCS_EN written
+[ 1026.831182] watchdog: watchdog0: watchdog did not stop!
+[ 1028.331283] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[ 1028.331293] [INFO] [RUST] stop: WCS cleared
+[ 1028.335897] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[ 1028.863209] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[ 1028.863253] [INFO] [RUST] probe: entry
+[ 1028.863267] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[ 1028.863269] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[ 1028.863271] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[ 1028.864157] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.

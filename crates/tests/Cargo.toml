@@ -1,0 +1,27 @@
+[package]
+name    = "watchdog-tests"
+version.workspace      = true
+edition.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+
+# Drives test discovery — each file in `tests/` becomes its own binary
+# under `cargo test`, so failures in one driver don't block the matrix.
+[lib]
+name = "watchdog_tests"
+path = "src/lib.rs"
+
+[dependencies]
+wdctl         = { path = "../wdctl" }
+tests-common  = { path = "../tests-common" }
+anyhow        = { workspace = true }
+log           = { workspace = true }
+env_logger    = { workspace = true }
+
+[dev-dependencies]
+rstest        = { workspace = true }
+serial_test   = { workspace = true }
+wdctl         = { path = "../wdctl" }
+tests-common  = { path = "../tests-common" }
+anyhow        = { workspace = true }
+libc          = "0.2"

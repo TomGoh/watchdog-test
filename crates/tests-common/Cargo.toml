@@ -1,0 +1,16 @@
+[package]
+name    = "tests-common"
+version.workspace      = true
+edition.workspace      = true
+license.workspace      = true
+repository.workspace   = true
+
+[lib]
+name = "tests_common"
+path = "src/lib.rs"
+
+[dependencies]
+wdctl   = { path = "../wdctl" }
+anyhow  = { workspace = true }
+log     = { workspace = true }
+libc    = "0.2"
