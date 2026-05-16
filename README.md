@@ -126,15 +126,16 @@ The placeholder `<TARGET>` below stands for whatever **your** SSH
 target is (an alias from `~/.ssh/config`, an `IP`, a `user@host`,
 etc.) — see [SSH setup](#2-set-up-ssh-access-to-your-target) below.
 
-### 1. Build the test binaries
+### 1. (Optional) Pre-install the rustup target
+
+The deploy script autodetects the target arch over SSH and triggers a
+build automatically if no cached binaries exist.  You only need this
+step if you want to pre-warm the build:
 
 ```bash
-# One-time toolchain setup — pick whichever target arch matches your hardware.
 rustup target add aarch64-unknown-linux-musl   # for ARM64 boards
 rustup target add x86_64-unknown-linux-musl    # for x86_64 boxes
-
-# Build a release-mode static-musl bundle.  Output: target/<triple>/release/deps/...
-./scripts/build.sh aarch64                     # OR  ./scripts/build.sh x86_64
+./scripts/build.sh                              # uses host arch by default
 ```
 
 The build produces several test binaries (one per `tests/*.rs` source
@@ -170,49 +171,61 @@ Host my-watchdog-target
     IdentityFile ~/.ssh/id_ed25519
 ```
 
-You will *also* need passwordless `sudo` on the target — the device
-node `/dev/watchdog0` is `0660 root:root`, and `/dev/kmsg` is
-`0440 root:root`.  Either:
+You will *also* need passwordless `sudo` on the target.  The
+autonomous path needs root for three things: opening `/dev/watchdog0`
+(0660 root:root), reading `/dev/kmsg` (0440 root:root), and
+`modprobe` / `rmmod` of the watchdog modules.  The simplest setup is
+a blanket NOPASSWD entry on a dedicated test box:
 
-- Add a *scoped* sudoers rule (recommended, restores nothing-for-free
-  semantics elsewhere):
+```bash
+echo "$(whoami) ALL=(ALL) NOPASSWD: ALL" \
+    | sudo tee /etc/sudoers.d/$(whoami)-nopasswd
+sudo chmod 0440 /etc/sudoers.d/$(whoami)-nopasswd
+```
 
-  ```bash
-  ssh user@target-host
-  sudo tee /etc/sudoers.d/watchdog-test >/dev/null <<EOF
-  $(whoami) ALL=(root) NOPASSWD: /tmp/watchdog-test/*
-  EOF
-  sudo chmod 0440 /etc/sudoers.d/watchdog-test
-  sudo visudo -c -f /etc/sudoers.d/watchdog-test   # expects: parsed OK
-  ```
+If you want a tighter sudoers rule on a developer workstation,
+include both the test binary path and the module-management commands:
 
-- Or grant blanket NOPASSWD (acceptable on a dedicated test box):
-
-  ```bash
-  echo "$(whoami) ALL=(ALL) NOPASSWD: ALL" \
-      | sudo tee /etc/sudoers.d/$(whoami)-nopasswd
-  ```
+```bash
+sudo tee /etc/sudoers.d/watchdog-test >/dev/null <<EOF
+$(whoami) ALL=(root) NOPASSWD: /tmp/watchdog-test/*, /sbin/modprobe, /sbin/rmmod, /usr/sbin/modprobe, /usr/sbin/rmmod
+EOF
+sudo chmod 0440 /etc/sudoers.d/watchdog-test
+sudo visudo -c -f /etc/sudoers.d/watchdog-test   # expects: parsed OK
+```
 
 ### 3. Run the suite
 
-Three tiers, picked via the 4th positional arg:
+The autonomous path takes a single argument — the SSH target.  It
+autodetects arch over SSH, bulk-loads every watchdog driver in the
+target's kernel tree, then iterates `/sys/class/watchdog/*` running
+the appropriate test set per discovered identity.
 
 ```bash
-# Default: fast tier, no reboots, ~5 seconds wall-clock.
+# Autonomous, reboot-safe.  Discovers + tests every loadable watchdog
+# (sbsa_gwdt-drv, sp5100_tco-drv, softdog-drv, plus any third-party
+# drivers like iTCO_wdt the kernel happens to ship).
 ./scripts/deploy.sh <TARGET>
 
-# Specify arch and target a particular driver by identity.
-./scripts/deploy.sh <TARGET> aarch64 "SBSA Generic Watchdog"
-
-# Extended tier — non-destructive but slower (continuous feed, modprobe cycle).
-./scripts/deploy.sh <TARGET> aarch64 "SBSA Generic Watchdog" extended
-
-# Lab tier — DESTRUCTIVE (will reboot the target if the watchdog fires correctly).
-./scripts/deploy.sh <TARGET> aarch64 "SBSA Generic Watchdog" lab
+# Lab tier — DESTRUCTIVE.  Loads ONLY the named module and runs the
+# real-reboot lab tests against its watchdog.
+./scripts/deploy.sh <TARGET> --lab sbsa_gwdt-drv
+./scripts/deploy.sh <TARGET> --lab softdog-drv
 ```
 
-The script prints a 5-second confirmation banner before lab mode
-actually fires; press Ctrl-C in that window to abort.
+Lab mode prints a 5-second confirmation banner before firing; press
+Ctrl-C in that window to abort.
+
+**What gets run per discovered identity:**
+- **Known driver** (`sbsa_gwdt-drv` / `sp5100_tco-drv` / `softdog-drv`)
+  — `common_conformance` + `common_extended` + the per-driver binary,
+  all with `--include-ignored` (full extended coverage).
+- **Unknown driver** (anything else that registered a `/sys/class/watchdog/*`)
+  — `common_conformance` + `common_extended` only (basic uapi
+  conformance check).
+
+After the run the script `rmmod`s every module it loaded and leaves
+pre-existing modules untouched.
 
 ### 4. (Optional) Archive the run
 
@@ -225,31 +238,32 @@ looks like" baselines, etc.  Tests don't read these files; they're
 written for humans.
 
 ```bash
-./scripts/capture-run.sh <TARGET> aarch64 "SBSA Generic Watchdog" fast
+./scripts/capture-run.sh <TARGET>                  # autonomous run
+./scripts/capture-run.sh <TARGET> --lab softdog-drv # lab run
 ```
 
-The four positional arguments mirror `deploy.sh`:
+Arguments mirror `deploy.sh`:
 
-| Position | Argument | Examples |
-|---|---|---|
-| 1 | SSH target | `kylin-pc`, `lab-arm-01`, `jose@192.0.2.42` |
-| 2 | Target arch | `aarch64` (default), `x86_64` |
-| 3 | Watchdog identity (the `WatchdogInfo::identity` string) | `"SBSA Generic Watchdog"`, `"Software Watchdog"`, `"SP5100 TCO Watchdog"` |
-| 4 | Test tier | `fast` (default), `extended`, `lab` |
+| Argument | Description |
+|---|---|
+| `<TARGET>` | SSH destination (alias, IP, or `user@host`) |
+| `--lab <module>` | Optional: run the destructive lab tier against the named kernel module |
 
-So a run dir's name (`logs/2026-05-08-kylin-pc-sbsa_generic_watchdog-fast-1533/`)
-**encodes the exact command that produced it** — the args are
-recoverable from the directory alone.
+Run-directory name encodes the kind of run:
+
+- Autonomous: `logs/<YYYY-MM-DD>-<host>-autonomous-<HHMM>/`
+- Lab: `logs/<YYYY-MM-DD>-<host>-lab-<sanitized-module>-<HHMM>/`
 
 What ends up inside each run dir:
 
 | File | Contents |
 |---|---|
-| `meta.txt` | target hostname, `uname -a`, `lsmod \| grep wdt` snapshot, `/sys/class/watchdog/*` field-by-field dump |
-| `dmesg-pre.log` | watchdog-relevant `dmesg` lines BEFORE the run started (timestamps preserved) |
-| `dmesg-post.log` | same filter AFTER the run finished |
+| `meta.txt` | pre-run target hostname, `uname -a`, `lsmod` snapshot, `/sys/class/watchdog/*` dump |
+| `meta-post.txt` | same snapshots taken AFTER the run (so you can see what changed) |
+| `dmesg-pre.log` | watchdog-relevant `dmesg` lines BEFORE the run |
+| `dmesg-post.log` | same filter AFTER the run |
 | `dmesg-delta.log` | the diff — kernel-log lines this specific run caused |
-| `tests-<tier>.log` | full stdout from each test binary in invocation order, including SKIP markers and per-test annotations |
+| `tests.log` | full stdout from `deploy.sh` (one section per discovered identity) |
 
 Older runs are never overwritten — every `capture-run.sh` invocation
 creates a fresh directory.  See [`logs/README.md`](logs/README.md)
@@ -259,11 +273,17 @@ for the full naming convention and reading order.
 
 ## Test tiers
 
-| Tier | Mode | Reboot risk | Covers | Wall-clock |
+The deploy script exposes two modes:
+
+| Mode | Invocation | Reboot risk | Covers | Wall-clock |
 |---|---|---|---|---|
-| Fast | `fast` (default) | none | static state + single-shot ops + lifecycle (no slow loops) | ~5 s |
-| Extended | `extended` | none | adds `--include-ignored` slow-but-safe tests (continuous-feed loop, modprobe cycle, …) | ~25 s |
-| Lab | `lab` | **YES — will reboot the target** | `lab_dangerous-*` binary only, gated by `WATCHDOG_LAB_DANGEROUS=YES_REALLY` | ~15 s |
+| Autonomous | `./scripts/deploy.sh <TARGET>` | none — by construction (every test goes through `with_open(...)` which always magic-V closes) | every loadable watchdog driver in the target's kernel tree, with full extended coverage (`--include-ignored`) per discovered identity | ~30–60 s per identity |
+| Lab | `./scripts/deploy.sh <TARGET> --lab <module>` | **YES — will reboot the target** when the watchdog fires correctly | `lab_dangerous-*` only, gated by `WATCHDOG_LAB_DANGEROUS=YES_REALLY` and identity-locked to the named module | ~15 s |
+
+Internally the test crate still uses the fast/extended split via
+`#[ignore]` — `cargo test` locally runs only the basic tests; `cargo
+test -- --include-ignored` runs everything.  The deploy script always
+includes ignored tests.
 
 Skip semantics: every per-driver test (`softdog_*`, `sp5100_*`, …)
 prints a `# SKIP: identity X is not Y` marker and counts as a pass
@@ -306,16 +326,29 @@ For `sbsa_gwdt` specifically (validated on real hardware):
 
 1. Add the identity string to `tests/common_conformance.rs`'s
    `c10_rust_lifecycle_log` dispatch.
-2. Drop a new `tests/<driver>.rs` with the per-driver invariants;
-   start by copying the `softdog.rs` skeleton (it's already
-   skip-aware).
-3. (Optional) drop a `tests/<driver>_extended.rs` for slow / SETOPTIONS
-   / modprobe tests — copy the structure of `sbsa_gwdt_extended.rs`.
-4. Re-run `./scripts/build.sh` and `./scripts/deploy.sh`.
+2. Drop a new `tests/<driver>.rs` with the per-driver invariants —
+   copy the structure of `softdog.rs` or `sbsa_gwdt.rs`.  Basic tests
+   at the top, slow / invasive ones below the divider with `#[ignore]`.
+3. Add two case arms to `scripts/deploy.sh` so the autonomous path
+   recognises the new identity:
+   ```bash
+   per_driver_binary_for_identity() {
+       case "$1" in
+           ...
+           "Your New Watchdog") echo "your_new_driver" ;;  # NEW
+       esac
+   }
+   ```
+   And extend the binary-name pattern in the `push_binaries` call:
+   ```bash
+   push_binaries '^(common_conformance|common_extended|sbsa_gwdt|softdog|sp5100_tco|your_new_driver)-'
+   ```
+4. Re-run `./scripts/build.sh` and `./scripts/deploy.sh <TARGET>`.
 
-The deploy script discovers test binaries by name pattern, so the new
-file's binary will be picked up automatically — no manual config to
-edit.
+If the kernel module ships under
+`/lib/modules/$(uname -r)/kernel/drivers/watchdog/`, the autonomous
+path will bulk-modprobe it automatically — no per-driver loading
+logic in the script.
 
 ---
 
@@ -365,6 +398,21 @@ binary directly via `cargo test` will not.  Even with
 `cargo test -- --ignored`, the consent gate prevents accidental
 reboots.
 
+### Non-lab tests must stay reboot-safe by construction
+
+The autonomous path runs every test against every loaded watchdog,
+including drivers that *will* reset the box on close-without-V.  This
+is safe today because every test goes through
+`tests_common::with_open(...)` which always magic-V closes (even on
+assertion failure), and the one test that deliberately closes without
+'V' (`<driver>_ext_05`) re-opens within 1.5 s and magic-V closes well
+inside the arm window.
+
+**When adding a test:** if it leaves a `Watchdog` armed without a
+follow-up magic-V close, it belongs in `lab_dangerous.rs`, NOT in a
+per-driver file.  Breaking this invariant would turn the autonomous
+path into a destructive path.
+
 ### Real-reset tests are NOT auto-recovering
 
 If `lab_01_no_ping_reboot` *fails* (i.e. the watchdog doesn't fire),
@@ -377,17 +425,23 @@ sessions will see the timer eventually expire and reboot anyway.
 
 ## Cross-arch builds
 
-The same source compiles for x86_64 — switch the toolchain triple:
+Arch is autodetected from the target — `./scripts/deploy.sh
+<TARGET>` does the right thing whether `<TARGET>` is ARM or x86.  The
+deploy script will trigger `./scripts/build.sh <arch>` for the right
+triple if no cached binaries exist.
+
+To pre-build for both arches:
 
 ```bash
-rustup target add x86_64-unknown-linux-musl
+rustup target add aarch64-unknown-linux-musl x86_64-unknown-linux-musl
+./scripts/build.sh aarch64
 ./scripts/build.sh x86_64
-./scripts/deploy.sh some-x86-target x86_64 "SP5100 TCO Watchdog"
 ```
 
-The `sp5100_tco`-specific tests run; `sbsa_gwdt` and `softdog`
-identity-gated tests skip cleanly because their drivers aren't
-loaded.
+On x86 targets the autonomous path picks up `sp5100_tco-drv` (AMD
+chipsets), `iTCO_wdt` (Intel), `softdog-drv`, etc.; on ARM targets it
+picks up `sbsa_gwdt-drv`, `softdog-drv`, and any board-specific
+drivers in the kernel tree.
 
 ---
 

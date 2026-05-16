@@ -2,3 +2,10 @@
 **/*.rs.bk
 Cargo.lock
 .DS_Store
+
+# capture-run.sh archives — keep one baseline; ignore future runs
+logs/[0-9][0-9][0-9][0-9]-*/
+!logs/2026-05-16-N80-autonomous-0920/
+
+# Brainstorming docs (not part of codebase)
+docs/superpowers/

@@ -1,108 +1,320 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-2.0
 #
-# scp the test binaries to the target machine and execute them under
-# sudo.  Identity selection happens via the WATCHDOG_TEST_IDENTITY env
-# var (see tests_common::pick_watchdog).
+# Autonomous deploy: SSH to <TARGET>, autodetect arch, autodetect every
+# loadable watchdog driver in the kernel tree, run the appropriate test
+# set against each discovered identity.
 #
 # Usage:
-#   ./scripts/deploy.sh <ssh-target> [arch] [identity] [mode]
+#   ./scripts/deploy.sh <TARGET>                  # autonomous, reboot-safe
+#   ./scripts/deploy.sh <TARGET> --lab <module>   # destructive, single named module
 #
-# Modes:
-#   fast      — run only the fast suite (common_conformance + per-driver
-#               basic + per-driver _extended).  Non-destructive.  DEFAULT.
-#   extended  — same as fast, plus all `--ignored` non-lab tests.  Useful
-#               for slow but safe coverage that's marked #[ignore].
-#   lab       — run ONLY the lab_dangerous binary, with
-#               WATCHDOG_LAB_DANGEROUS=YES_REALLY set; tests in this
-#               tier may REBOOT the target machine.
+# The autonomous path:
+#   1. Resolve target arch via `ssh $TARGET uname -m`.
+#   2. Build for that arch if no binaries are cached.
+#   3. Snapshot pre-existing watchdogs (so we know what we loaded vs.
+#      what was already there).
+#   4. Bulk-modprobe every module under
+#      /lib/modules/$(uname -r)/kernel/drivers/watchdog/ — failures are
+#      silently ignored (wrong-hardware drivers fail with -ENODEV).
+#   5. Re-enumerate /sys/class/watchdog/* — that's the test list.
+#   6. Push test binaries.
+#   7. For each discovered identity:
+#        - Known driver  → run common_conformance + common_extended +
+#                           the per-driver binary.
+#        - Unknown driver → run common_conformance + common_extended only
+#                           (basic conformance).
+#      All gated by WATCHDOG_TEST_IDENTITY=<id> and --include-ignored.
+#   8. rmmod every module we loaded (best-effort; pre-existing untouched).
 #
-# Examples:
-#   ./scripts/deploy.sh my-target                                                # arm64, fast tier
-#   ./scripts/deploy.sh my-target aarch64 "SBSA Generic Watchdog" extended       # extended tier
-#   ./scripts/deploy.sh my-target aarch64 "SBSA Generic Watchdog" lab            # *** WILL REBOOT ***
+# Reboot safety: every test goes through with_open(...) which always
+# magic-V closes.  The non-lab path never fires the watchdog.  Future
+# test additions that drop a Watchdog without a magic-V close MUST be
+# placed in lab_dangerous.rs, not the per-driver file.
 
 set -euo pipefail
 
-TARGET="${1:?ssh target required, e.g. my-target}"
-ARCH="${2:-aarch64}"
-IDENTITY="${3:-}"
-MODE="${4:-fast}"
+# ---------------------------------------------------------------------------
+# Argument parsing
+# ---------------------------------------------------------------------------
+LAB_MODULE=""
+TARGET=""
 
-case "$ARCH" in
-    aarch64|arm64) TRIPLE="aarch64-unknown-linux-musl" ;;
-    x86_64|amd64)  TRIPLE="x86_64-unknown-linux-musl"  ;;
-    *) echo "Unknown ARCH: $ARCH" >&2; exit 1 ;;
-esac
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --lab)
+            LAB_MODULE="${2:?--lab requires <module> (e.g. softdog-drv)}"
+            shift 2
+            ;;
+        --help|-h)
+            sed -n '2,30p' "$0"
+            exit 0
+            ;;
+        -*)
+            echo "Unknown option: $1" >&2
+            exit 2
+            ;;
+        *)
+            if [ -z "$TARGET" ]; then
+                TARGET="$1"
+            else
+                echo "Unexpected positional arg: $1" >&2
+                exit 2
+            fi
+            shift
+            ;;
+    esac
+done
 
-case "$MODE" in
-    fast|extended|lab) ;;
-    *) echo "Unknown MODE: $MODE (use fast|extended|lab)" >&2; exit 1 ;;
-esac
+if [ -z "$TARGET" ]; then
+    echo "Usage: $0 <TARGET> [--lab <module>]" >&2
+    exit 2
+fi
 
 cd "$(dirname "$0")/.."
 
-# Build first if no binaries exist
+# ---------------------------------------------------------------------------
+# Per-driver tests table.  Adding a new Rust-port driver = one new
+# crates/tests/tests/<driver>.rs + one case arm here.
+# ---------------------------------------------------------------------------
+per_driver_binary_for_identity() {
+    case "$1" in
+        "SBSA Generic Watchdog")    echo "sbsa_gwdt" ;;
+        "SP5100 TCO Watchdog")      echo "sp5100_tco" ;;
+        "Software Watchdog (Rust)") echo "softdog" ;;
+        *) return 1 ;;
+    esac
+}
+
+# ---------------------------------------------------------------------------
+# Resolve arch from target, build if needed.
+# ---------------------------------------------------------------------------
+echo "Resolving target arch via SSH …"
+REMOTE_UNAME="$(ssh "$TARGET" 'uname -m')"
+case "$REMOTE_UNAME" in
+    aarch64|arm64) ARCH="aarch64"; TRIPLE="aarch64-unknown-linux-musl" ;;
+    x86_64|amd64)  ARCH="x86_64";  TRIPLE="x86_64-unknown-linux-musl"  ;;
+    *) echo "Unsupported target arch: $REMOTE_UNAME" >&2; exit 1 ;;
+esac
+echo "  target arch = $REMOTE_UNAME → $TRIPLE"
+
 BIN_DIR="target/$TRIPLE/release/deps"
 if [ ! -d "$BIN_DIR" ] || [ -z "$(ls -A "$BIN_DIR" 2>/dev/null)" ]; then
     ./scripts/build.sh "$ARCH"
 fi
 
-# Pick which binary names we run, per mode.
-case "$MODE" in
-    fast|extended)
-        PATTERN='^(common_conformance|common_extended|sbsa_gwdt|sbsa_gwdt_extended|softdog|sp5100_tco)-'
-        ;;
-    lab)
-        PATTERN='^lab_dangerous-'
-        ;;
-esac
-
-mapfile -t BINS < <(find "$BIN_DIR" -maxdepth 1 -type f -executable ! -name "*.so" \
-                        -printf '%f\n' | grep -E "$PATTERN" | sort)
-
-if [ "${#BINS[@]}" -eq 0 ]; then
-    echo "No test binaries match pattern $PATTERN in $BIN_DIR — did the build succeed?" >&2
-    exit 1
-fi
-
+# ---------------------------------------------------------------------------
+# Helpers shared by both modes.
+# ---------------------------------------------------------------------------
 REMOTE_DIR="/tmp/watchdog-test"
-echo "Pushing ${#BINS[@]} test binaries (mode=$MODE) to $TARGET:$REMOTE_DIR …"
-ssh "$TARGET" "mkdir -p $REMOTE_DIR && rm -f $REMOTE_DIR/*"
-for b in "${BINS[@]}"; do
-    scp -q "$BIN_DIR/$b" "$TARGET:$REMOTE_DIR/$b"
-done
 
-# Compose the per-tier env + flag combo.
-EXTRA_ENV=""
-EXTRA_FLAGS="--test-threads=1 --nocapture"
-case "$MODE" in
-    extended) EXTRA_FLAGS="$EXTRA_FLAGS --include-ignored" ;;
-    lab)
-        EXTRA_ENV="WATCHDOG_LAB_DANGEROUS=YES_REALLY"
-        EXTRA_FLAGS="$EXTRA_FLAGS --include-ignored"
-        # Big red warning before the user trips this
-        cat <<EOF
+push_binaries() {
+    local pattern="$1"
+    mapfile -t BINS < <(find "$BIN_DIR" -maxdepth 1 -type f -executable ! -name "*.so" \
+                            -printf '%f\n' | grep -E "$pattern" | sort)
+    if [ "${#BINS[@]}" -eq 0 ]; then
+        echo "No test binaries match pattern $pattern in $BIN_DIR" >&2
+        exit 1
+    fi
+    echo "Pushing ${#BINS[@]} binaries to $TARGET:$REMOTE_DIR …"
+    ssh "$TARGET" "mkdir -p $REMOTE_DIR && rm -f $REMOTE_DIR/*"
+    for b in "${BINS[@]}"; do
+        scp -q "$BIN_DIR/$b" "$TARGET:$REMOTE_DIR/$b"
+    done
+}
+
+# Run a single binary on the target.  $1=binary basename, $2=identity,
+# $3=extra env (string like 'WATCHDOG_LAB_DANGEROUS=YES_REALLY')
+run_binary() {
+    local bin="$1" identity="$2" extra_env="${3:-}"
+    echo "----- $bin (identity=$identity) -----"
+    ssh -t "$TARGET" \
+        "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }sudo -E $REMOTE_DIR/$bin --test-threads=1 --nocapture --include-ignored" \
+        || echo "FAILED: $bin (exit $?)"
+}
+
+# Find the binary on the target whose filename starts with `<base>-`.
+# Returns the basename (e.g. "softdog-9b7…") or empty.
+find_remote_binary() {
+    local base="$1"
+    ssh "$TARGET" "ls $REMOTE_DIR/ 2>/dev/null | grep -E '^${base}-' | head -1"
+}
+
+# ---------------------------------------------------------------------------
+# LAB MODE
+# ---------------------------------------------------------------------------
+if [ -n "$LAB_MODULE" ]; then
+    cat <<EOF
 
 ================================================================================
-  ATTENTION — MODE=lab will run the dangerous tier on $TARGET.
-  Tests in this tier may REBOOT the machine when the watchdog fires correctly.
+  ATTENTION — LAB MODE will load $LAB_MODULE on $TARGET and run the
+  destructive lab tier against its watchdog.  Tests in this tier may
+  REBOOT the machine when the watchdog fires correctly.
   Press Ctrl-C in the next 5 seconds to abort.
 ================================================================================
 
 EOF
-        sleep 5
-        ;;
-esac
+    sleep 5
+
+    echo "Loading kernel module $LAB_MODULE …"
+    ssh "$TARGET" "sudo modprobe $LAB_MODULE" || {
+        echo "modprobe $LAB_MODULE failed; aborting." >&2
+        exit 1
+    }
+    sleep 1
+
+    # Discover the identity that $LAB_MODULE registered.  Walk
+    # /sys/class/watchdog/*/device/driver symlinks; whichever resolves
+    # to a directory whose basename matches the module name (with
+    # underscores allowed in place of dashes) is the one.
+    LAB_IDENTITY="$(ssh "$TARGET" "
+        for d in /sys/class/watchdog/watchdog*; do
+            [ -e \"\$d/device/driver\" ] || continue
+            drv=\$(basename \$(readlink -f \"\$d/device/driver\"))
+            mod=\$(echo '$LAB_MODULE' | tr '-' '_')
+            case \"\$drv\" in
+                \"\$mod\"|\"\${mod%_drv}\"|\"\${mod}_drv\")
+                    cat \"\$d/identity\"
+                    exit 0
+                    ;;
+            esac
+        done
+        # Fallback: if there's only one watchdog, use it.
+        for d in /sys/class/watchdog/watchdog*; do
+            cat \"\$d/identity\"
+            exit 0
+        done
+    ")"
+
+    if [ -z "$LAB_IDENTITY" ]; then
+        echo "Could not discover identity for module $LAB_MODULE" >&2
+        exit 1
+    fi
+    echo "  module $LAB_MODULE → identity \"$LAB_IDENTITY\""
+
+    push_binaries '^lab_dangerous-'
+
+    for b in "${BINS[@]}"; do
+        run_binary "$b" "$LAB_IDENTITY" "WATCHDOG_LAB_DANGEROUS=YES_REALLY"
+    done
+    exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# AUTONOMOUS MODE
+# ---------------------------------------------------------------------------
+
+# Snapshot pre-existing watchdog identities so cleanup knows what to
+# leave alone.
+echo "Enumerating pre-existing watchdogs …"
+PRE_EXISTING="$(ssh "$TARGET" '
+    for f in /sys/class/watchdog/*/identity; do
+        [ -e "$f" ] && cat "$f"
+    done 2>/dev/null
+' || true)"
+echo "  before modprobe: $(echo "$PRE_EXISTING" | tr '\n' ',' | sed 's/,$//' | sed 's/^$/<none>/')"
+
+# Snapshot loaded modules so cleanup knows what to leave alone.
+PRE_LOADED_MODULES="$(ssh "$TARGET" 'lsmod | awk "NR>1 {print \$1}"' || true)"
+
+# Modprobe only the modules we have first-class tests for.  The
+# previous design bulk-loaded everything under
+# /lib/modules/.../kernel/drivers/watchdog/, which blew up on real
+# hardware — several upstream drivers either auto-arm on probe (WDAT)
+# or unconditionally set WATCHDOG_NOWAYOUT_INIT_STATUS.  Loading them
+# without then driving them = box reboots.
+#
+# Drivers loaded at boot (iTCO_wdt, hpwdt, BIOS-managed WDAT, etc.)
+# are still picked up by the post-modprobe enumerate step below and
+# get basic conformance coverage via common_conformance.
+# Force nowayout=0 explicitly.  Module-cmdline params override the
+# kernel's build-time WATCHDOG_NOWAYOUT default, so this guarantees a
+# stoppable timer regardless of how the running kernel was configured.
+# Without this, on Kylin we observed nowayout=Y by default — which
+# makes magic-V close a no-op, blocks SETOPTIONS DISABLECARD, and
+# turns rmmod into a delayed reboot/panic.
+echo "Loading our managed watchdog drivers (nowayout=0) …"
+for mod in sbsa_gwdt-rust sp5100_tco-rust softdog-rust; do
+    if ssh "$TARGET" "sudo modprobe $mod nowayout=0 2>/dev/null"; then
+        echo "  modprobe $mod nowayout=0"
+    fi
+done
+sleep 1
+
+# Re-enumerate to get the authoritative test list.
+echo "Re-enumerating /sys/class/watchdog after bulk modprobe …"
+IDENTITIES_RAW="$(ssh "$TARGET" '
+    for f in /sys/class/watchdog/*/identity; do
+        [ -e "$f" ] && cat "$f"
+    done 2>/dev/null
+' || true)"
+
+if [ -z "$IDENTITIES_RAW" ]; then
+    echo "No watchdog devices on target after bulk modprobe; nothing to test."
+    exit 0
+fi
+
+mapfile -t IDENTITIES <<< "$IDENTITIES_RAW"
+echo "  testing ${#IDENTITIES[@]} watchdog(s):"
+for id in "${IDENTITIES[@]}"; do
+    if per_driver_binary_for_identity "$id" >/dev/null; then
+        echo "    - \"$id\" (known: full per-driver suite)"
+    else
+        echo "    - \"$id\" (unknown: basic conformance only)"
+    fi
+done
+
+# Push every binary the autonomous path may need.
+push_binaries '^(common_conformance|common_extended|sbsa_gwdt|softdog|sp5100_tco)-'
+
+# Cache resolved remote binary names so we don't re-`ls` for each identity.
+COMMON_CONF_BIN="$(find_remote_binary common_conformance)"
+COMMON_EXT_BIN="$(find_remote_binary common_extended)"
+
+# Iterate identities.  Per-driver test binaries that don't match the
+# current identity skip themselves cleanly via skip_unless_identity.
+for id in "${IDENTITIES[@]}"; do
+    echo
+    echo "============================================================"
+    echo "Testing identity: \"$id\""
+    echo "============================================================"
+    [ -n "$COMMON_CONF_BIN" ] && run_binary "$COMMON_CONF_BIN" "$id"
+    [ -n "$COMMON_EXT_BIN" ]  && run_binary "$COMMON_EXT_BIN"  "$id"
+
+    if base="$(per_driver_binary_for_identity "$id")"; then
+        bin="$(find_remote_binary "$base")"
+        if [ -n "$bin" ]; then
+            run_binary "$bin" "$id"
+        else
+            echo "WARN: no $base-* binary found in $REMOTE_DIR" >&2
+        fi
+    fi
+done
+
+# ---------------------------------------------------------------------------
+# Intentionally NO cleanup-rmmod step.
+#
+# History: an earlier version of this script `rmmod`'d every module it
+# loaded.  On a real ARMv8 box (Kylin/Phytium with the Rust sbsa_gwdt
+# port) this panicked the kernel — the Rust port's exit/unregister
+# path has a race where module exit returns before
+# watchdog_unregister_device fully completes, and a subsequent op
+# (next modprobe / hardware refresh) lands on stale state.  See the
+# kernel-side bug report.
+#
+# Until that's fixed we leave the modules loaded.  Reboot the target
+# to clear them.
+# ---------------------------------------------------------------------------
+echo
+POST_LOADED_MODULES="$(ssh "$TARGET" 'lsmod | awk "NR>1 {print \$1}"' || true)"
+LOADED_BY_US="$(comm -23 \
+    <(echo "$POST_LOADED_MODULES" | sort -u) \
+    <(echo "$PRE_LOADED_MODULES"  | sort -u))"
+if [ -n "$LOADED_BY_US" ]; then
+    echo "Note: leaving these modules loaded (rmmod is unsafe — see deploy.sh comment):"
+    echo "$LOADED_BY_US" | sed 's/^/  /'
+    echo "Reboot $TARGET to unload them."
+fi
 
 echo
-echo "Running tests on $TARGET (mode=$MODE) …"
-echo "============================================================"
-# `ssh -t` allocates a pseudo-TTY so sudo's password prompt is visible
-# (and an askpass helper / NOPASSWD entry can also work transparently).
-for b in "${BINS[@]}"; do
-    echo "----- $b -----"
-    ssh -t "$TARGET" \
-        "${IDENTITY:+WATCHDOG_TEST_IDENTITY='$IDENTITY' }${EXTRA_ENV:+$EXTRA_ENV }sudo -E $REMOTE_DIR/$b $EXTRA_FLAGS" \
-        || echo "FAILED: $b (exit $?)"
-done
+echo "Done."

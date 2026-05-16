@@ -198,7 +198,9 @@ fn c10_rust_lifecycle_log() -> Result<()> {
     let id = sys.identity()?;
     let needle: &str = match id.as_str() {
         "SBSA Generic Watchdog" => "[RUST] sbsa_gwdt:",
-        "Software Watchdog" => "[RUST] softdog:",
+        // The Rust softdog port advertises identity "Software Watchdog (Rust)"
+        // (with the "(Rust)" suffix), distinct from the in-tree C softdog.
+        "Software Watchdog (Rust)" => "[RUST] softdog",
         "SP5100 TCO Watchdog" => "[RUST] sp5100_tco:",
         other => {
             println!("# SKIP: identity {other:?} is not a known Rust-ported driver");

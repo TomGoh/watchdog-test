@@ -1,0 +1,166 @@
+==========================================
+Run kind:    autonomous
+Started:     2026-05-16T09:20:36+08:00
+Target:      N80
+==========================================
+
+Resolving target arch via SSH …
+Kylin V11
+  target arch = aarch64 → aarch64-unknown-linux-musl
+Enumerating pre-existing watchdogs …
+Kylin V11
+  before modprobe: 
+Kylin V11
+Loading our managed watchdog drivers (nowayout=0) …
+Kylin V11
+  modprobe sbsa_gwdt-rust nowayout=0
+Kylin V11
+Kylin V11
+  modprobe softdog-rust nowayout=0
+Re-enumerating /sys/class/watchdog after bulk modprobe …
+Kylin V11
+  testing 2 watchdog(s):
+    - "SBSA Generic Watchdog" (known: full per-driver suite)
+    - "Software Watchdog (Rust)" (known: full per-driver suite)
+Pushing 5 binaries to N80:/tmp/watchdog-test …
+Kylin V11
+Kylin V11
+Kylin V11
+
+============================================================
+Testing identity: "SBSA Generic Watchdog"
+============================================================
+----- common_conformance-55a4900b3c8693c9 (identity=SBSA Generic Watchdog) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 10 tests
+test c01_sysfs_entry_exists ... # probe: watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+ok
+test c02_identity_consistent ... ok
+test c03_options_advertise_keepaliveping ... ok
+test c04_default_timeout_in_range ... ok
+test c05_keepalive_ioctl_works ... ok
+test c06_magic_close_cycle ... ok
+test c07_set_timeout_round_trip ... ok
+test c08_set_timeout_zero_rejected ... ok
+test c09_timeleft_in_range ... ok
+test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] sbsa_gwdt: module init \xe2\x80\x94 registering platform driver
+ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.10s
+
+----- common_extended-aaabc0d44818a28c (identity=SBSA Generic Watchdog) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 5 tests
+test c_ext_01_write_byte_ping ... # probe: watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+ok
+test c_ext_02_concurrent_open_ebusy ... ok
+test c_ext_03_set_timeout_clamps_oversize ... ok
+test c_ext_04_bootstatus_readable ... # bootstatus = 0x0000
+ok
+test c_ext_05_timeleft_progresses ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.58s
+
+Kylin V11
+----- sbsa_gwdt-e6ac78375c1f3237 (identity=SBSA Generic Watchdog) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 12 tests
+test regex_lite_self_check::matches_init_log_pattern ... ok
+test sbsa_01_identity ... ok
+test sbsa_02_options_bitmap ... ok
+test sbsa_03_init_log_format ... ok
+test sbsa_04_clk_plausible ... ok
+test sbsa_ext_01_continuous_feed ... # feeding watchdog for 20s (timeout=10, ping every 5s)
+# survived 4 pings over 20s
+ok
+test sbsa_ext_02_write_byte_ping ... ok
+test sbsa_ext_03_settimeout_matrix ... ok
+test sbsa_ext_04_setoptions_disable_enable ... ok
+test sbsa_ext_05_close_without_v_keeps_running ... ok
+test sbsa_ext_06_dmesg_version_consistent ... # detected SBSA GWDT version = 0
+ok
+test sbsa_ext_99_modprobe_cycle ... # SKIP: sbsa_gwdt-drv has a known kernel panic in the rmmod/unregister path. Set WATCHDOG_TEST_SBSA_MODPROBE_CYCLE=YES_IT_MAY_PANIC to run anyway.
+ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.69s
+
+
+============================================================
+Testing identity: "Software Watchdog (Rust)"
+============================================================
+----- common_conformance-55a4900b3c8693c9 (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 10 tests
+test c01_sysfs_entry_exists ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+ok
+test c02_identity_consistent ... ok
+test c03_options_advertise_keepaliveping ... ok
+test c04_default_timeout_in_range ... ok
+test c05_keepalive_ioctl_works ... ok
+test c06_magic_close_cycle ... ok
+test c07_set_timeout_round_trip ... ok
+test c08_set_timeout_zero_rejected ... ok
+test c09_timeleft_in_range ... ok
+test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s
+
+----- common_extended-aaabc0d44818a28c (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 5 tests
+test c_ext_01_write_byte_ping ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+ok
+test c_ext_02_concurrent_open_ebusy ... ok
+test c_ext_03_set_timeout_clamps_oversize ... ok
+test c_ext_04_bootstatus_readable ... # bootstatus = 0x0000
+ok
+test c_ext_05_timeleft_progresses ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.51s
+
+Kylin V11
+----- softdog-01f76c1b8107e62d (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 10 tests
+test softdog_01_identity ... ok
+test softdog_02_options_advertised ... ok
+test softdog_03_dmesg_init_log ... # softdog init line: [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+ok
+test softdog_ext_01_continuous_feed ... # feeding softdog for 120s (timeout=60, ping every 30s)
+# survived 4 pings over 120s
+ok
+test softdog_ext_02_write_byte_ping ... ok
+test softdog_ext_03_settimeout_matrix ... ok
+test softdog_ext_04_setoptions_disable_enable ... ok
+test softdog_ext_05_close_without_v_keeps_running ... ok
+test softdog_ext_06_module_param_visible ... # detected soft_margin=60s nowayout=0
+ok
+test softdog_ext_99_modprobe_cycle ... # rmmod softdog-rust
+# modprobe softdog-rust
+ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.57s
+
+
+Kylin V11
+Note: leaving these modules loaded (rmmod is unsafe — see deploy.sh comment):
+  sbsa_gwdt_rust
+  softdog_rust
+Reboot N80 to unload them.
+
+Done.
+
+Finished:    2026-05-16T09:23:12+08:00

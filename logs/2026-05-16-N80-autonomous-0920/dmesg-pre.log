@@ -1,0 +1,13 @@
+Kylin V11
+[    0.000000] psci: Trusted OS migration not required
+[    0.000000] Memory: 13357064K/16711680K available (26688K kernel code, 6506K rwdata, 17988K rodata, 7104K init, 2072K bss, 3223544K reserved, 131072K cma-reserved)
+[    0.131172] Initialise system trusted keyrings
+[    0.145298] ACPI GTDT: found 1 SBSA generic Watchdog(s).
+[    0.178273] watchdog: NMI not fully supported
+[    0.178275] watchdog: Hard watchdog permanently disabled
+[    0.887324] hid-generic 0003:093A:2510.0001: Rust input,hidraw0: USB HID v1.11 Mouse [PixArt USB Optical Mouse] on usb-PHYT0039:02-1/input0
+[    2.610169] hid-generic 0018:347D:7853.0002: Rust input,hidraw1: I2C HID v1.00 Device [BLTP7853:00 347D:7853] on i2c-BLTP7853:00
+[    2.646925] btusb(rust): btusb_submit_intr_urb done
+[    2.646930] btusb(rust): btusb_submit_bulk_urb done
+[    2.646933] btusb(rust): btusb_submit_bulk_urb done
+[    2.958810] hid-multitouch 0018:347D:7853.0002: Rust input,hidraw1: I2C HID v1.00 Device [BLTP7853:00 347D:7853] on i2c-BLTP7853:00

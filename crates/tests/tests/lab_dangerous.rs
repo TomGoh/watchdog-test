@@ -25,7 +25,7 @@ use std::time::Duration;
 
 use anyhow::Result;
 use serial_test::serial;
-use tests_common::{describe, pick_watchdog, require_lab_consent, require_root};
+use tests_common::{describe, pick_watchdog, require_lab_consent, require_root, skip_unless_identity};
 
 // ----------------------------------------------------------------------------
 // LAB-01  No-ping reboot: open the watchdog, set a short timeout,
@@ -120,4 +120,46 @@ fn lab_02_magic_v_disarms() -> Result<()> {
     );
     std::thread::sleep(wait);
     Ok(())
+}
+
+// ----------------------------------------------------------------------------
+// LAB-03  softdog real-reboot: same shape as LAB-01 but explicitly
+//         identity-gated to "Software Watchdog" so the deploy script can
+//         fire it independently of any hardware watchdog also loaded on
+//         the target.  Skips cleanly (without firing) when softdog is
+//         not the device under test.
+// ----------------------------------------------------------------------------
+#[test]
+#[ignore = "lab-CI only — reboots the machine on success"]
+#[serial(watchdog)]
+fn lab_03_softdog_real_reboot() -> Result<()> {
+    require_root()?;
+    if !require_lab_consent()? {
+        return Ok(());
+    }
+    let Some(sys) = skip_unless_identity("Software Watchdog")? else {
+        return Ok(());
+    };
+    println!("# {}", describe(&sys)?);
+
+    let arm: i32 = 5;
+    let wait = Duration::from_secs((arm as u64) + 5);
+
+    let wdt = sys.open_dev()?;
+    let actual = wdt.set_timeout(arm)?;
+    println!(
+        "# arming softdog with timeout={}s; expecting reset within ~{}s",
+        actual,
+        wait.as_secs()
+    );
+
+    std::thread::sleep(wait);
+
+    drop(wdt);
+    anyhow::bail!(
+        "LAB-03 FAILED: slept {}s past {}s timeout without reboot; \
+         softdog-drv is not firing",
+        wait.as_secs(),
+        actual
+    );
 }
