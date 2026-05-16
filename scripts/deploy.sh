@@ -265,11 +265,12 @@ for id in "${IDENTITIES[@]}"; do
 done
 
 # Push every binary the autonomous path may need.
-push_binaries '^(common_conformance|common_extended|sbsa_gwdt|softdog|sp5100_tco)-'
+push_binaries '^(common_conformance|common_extended|gc_test|sbsa_gwdt|softdog|sp5100_tco)-'
 
 # Cache resolved remote binary names so we don't re-`ls` for each identity.
 COMMON_CONF_BIN="$(find_remote_binary common_conformance)"
 COMMON_EXT_BIN="$(find_remote_binary common_extended)"
+GC_TEST_BIN="$(find_remote_binary gc_test)"
 
 # Iterate identities.  Per-driver test binaries that don't match the
 # current identity skip themselves cleanly via skip_unless_identity.
@@ -289,6 +290,8 @@ for id in "${IDENTITIES[@]}"; do
             echo "WARN: no $base-* binary found in $REMOTE_DIR" >&2
         fi
     fi
+    # gc_test: the 4-item end-to-end QA procedure (driver-agnostic).
+    [ -n "$GC_TEST_BIN" ] && run_binary "$GC_TEST_BIN" "$id"
 done
 
 # ---------------------------------------------------------------------------
