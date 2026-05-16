@@ -325,14 +325,9 @@ fn sbsa_ext_06_dmesg_version_consistent() -> Result<()> {
 //              sbsa_gwdt_exit_rust → unregister_platform_driver →
 //              re-init paths.
 //
-//              CURRENTLY DISABLED BY DEFAULT — the Rust sbsa_gwdt port
-//              has a confirmed unregister-path bug that panics the
-//              kernel during rmmod (reproduced on N80 / Kylin /
-//              kernel 6.6.103+).  Once the kernel-side fix lands,
-//              remove the env-var gate.
-//
-//              Also self-skips under nowayout=1 (rmmod would stop the
-//              in-kernel keepalive on an armed timer).
+//              Self-skips under nowayout=1 (rmmod would stop the
+//              in-kernel keepalive on an armed timer and reboot the
+//              box).
 #[test]
 #[ignore]
 #[serial(watchdog)]
@@ -343,13 +338,6 @@ fn sbsa_ext_99_modprobe_cycle() -> Result<()> {
     };
     if sys_before.nowayout().unwrap_or(false) {
         println!("# SKIP: nowayout=1 — rmmod would unsync the in-kernel keepalive and reboot/panic the box");
-        return Ok(());
-    }
-    if std::env::var("WATCHDOG_TEST_SBSA_MODPROBE_CYCLE").as_deref() != Ok("YES_IT_MAY_PANIC") {
-        println!(
-            "# SKIP: sbsa_gwdt-drv has a known kernel panic in the rmmod/unregister path. \
-             Set WATCHDOG_TEST_SBSA_MODPROBE_CYCLE=YES_IT_MAY_PANIC to run anyway."
-        );
         return Ok(());
     }
     let id_before = sys_before.identity()?;
