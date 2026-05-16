@@ -103,19 +103,22 @@ watchdog-test/
 │   └── tests/
 │       ├── tests/
 │       │   ├── common_conformance.rs        # C-01..C-10 — every driver must pass (FAST)
-│       │   ├── common_extended.rs           # C-EXT-01..05 — cross-driver lifecycle (FAST)
-│       │   ├── sbsa_gwdt.rs                 # SBSA basic identity / format / clk (FAST)
-│       │   ├── sbsa_gwdt_extended.rs        # SBSA continuous feed / SETOPTIONS / modprobe
-│       │   ├── softdog.rs                   # auto-skips when softdog isn't loaded
+│       │   ├── common_extended.rs           # C-EXT-01..05 — cross-driver lifecycle (#[ignore])
+│       │   ├── sbsa_gwdt.rs                 # SBSA basic + extended (sbsa_01..04 fast,
+│       │   │                                #   sbsa_ext_01..99 #[ignore])
+│       │   ├── softdog.rs                   # Softdog basic + extended (softdog_01..03 fast,
+│       │   │                                #   softdog_ext_01..99 #[ignore])
 │       │   ├── sp5100_tco.rs                # auto-skips when sp5100_tco isn't loaded
+│       │   ├── gc_test.rs                   # 4-item end-to-end QA procedure (driver-agnostic)
 │       │   └── lab_dangerous.rs             # opt-in DESTRUCTIVE tier (lab only)
 │       └── src/lib.rs                       # placeholder
 ├── scripts/
 │   ├── build.sh                             # build static-musl binaries for chosen arch
-│   ├── deploy.sh                            # scp + ssh-run on a target, mode-aware
+│   ├── deploy.sh                            # autonomous SSH-driven run on a target
 │   └── capture-run.sh                       # archive a complete run under logs/
-└── logs/                                    # archived run records (timestamps preserved)
-    └── 2026-05-08-…/                        # one subdir per capture-run.sh invocation
+└── logs/
+    ├── bug-reports/                         # known driver issues found by the suite
+    └── 2026-05-16-…/                        # one subdir per capture-run.sh invocation
 ```
 
 ---
@@ -312,12 +315,14 @@ For `sbsa_gwdt` specifically (validated on real hardware):
 | `WDIOC_GETBOOTSTATUS` | c_ext_04 | bootstatus byte plumbing |
 | `WDIOC_SETOPTIONS DISABLE/ENABLE` | sbsa_ext_04 | Rust `start`/`stop` via direct ioctl |
 | Magic-V close clean | c06 | Watchdog core close path |
-| No-V close keeps timer running | sbsa_ext_05 | Driver doesn't auto-stop |
+| No-V close keeps timer running | sbsa_ext_05 | Driver doesn't auto-stop; uses `Watchdog::close_without_v()` to bypass the default Drop-writes-V safety net |
 | Concurrent open EBUSY | c_ext_02 | `watchdog_dev.c` exclusivity |
 | 30 s continuous feed | sbsa_ext_01 | End-to-end ping/keepalive over time |
-| rmmod / modprobe cycle | sbsa_ext_99 | `init_rust` ↔ `exit_rust` lifecycle |
+| rmmod / modprobe cycle (single) | sbsa_ext_99 | `init_rust` ↔ `exit_rust` lifecycle |
+| **rmmod / modprobe cycle ×10** | gc_04 | Stress repeat — surfaces refcount leaks |
 | `[RUST]` lifecycle log lines | c10 | `pr_info!` / `dev_info!` macros |
-| **Real reboot on no-ping** | lab_01 *(destructive)* | Hardware reset path WS0→WS1 |
+| Device-info / feed / lifecycle end-to-end | gc_01..04 | QA-procedure-style coverage (driver-agnostic) |
+| **Real reboot on no-ping** | lab_01, gc_03 *(destructive)* | Hardware reset path WS0→WS1 |
 | **Magic-V actually disarms** | lab_02 *(destructive on failure)* | `sbsa_gwdt_stop()` clears WCS |
 
 ---
@@ -402,16 +407,31 @@ reboots.
 
 The autonomous path runs every test against every loaded watchdog,
 including drivers that *will* reset the box on close-without-V.  This
-is safe today because every test goes through
-`tests_common::with_open(...)` which always magic-V closes (even on
-assertion failure), and the one test that deliberately closes without
-'V' (`<driver>_ext_05`) re-opens within 1.5 s and magic-V closes well
-inside the arm window.
+is safe by construction:
 
-**When adding a test:** if it leaves a `Watchdog` armed without a
-follow-up magic-V close, it belongs in `lab_dangerous.rs`, NOT in a
-per-driver file.  Breaking this invariant would turn the autonomous
-path into a destructive path.
+- **`wdctl::Watchdog::Drop` writes magic-'V' by default.**  Any
+  `Watchdog` going out of scope — through normal return, `?`
+  early-bail, or a `panic!` unwind — writes 'V' to the fd before the
+  kernel sees the close.  This honors the `WDIOF_MAGICCLOSE` userspace
+  contract automatically and balances the kernel's
+  `module_get`/`module_put` accounting (see
+  `drivers/watchdog/watchdog_dev.c:watchdog_release`).
+- **`tests_common::with_open(...)` and `magic_close()`** also
+  explicitly write 'V' — redundant with Drop, but kept so the intent
+  is visible at the call site.
+- **`Watchdog::close_without_v()`** is the only escape hatch.  It
+  consumes `self` and suppresses Drop's 'V' write, exposing the
+  kernel's no-magic-V `watchdog_release` path so tests like
+  `sbsa_ext_05_close_without_v_keeps_running` can verify the kernel's
+  "keep-pinging-after-close-without-V" behavior.  `*_ext_05` re-opens
+  within 1.5 s and magic-V closes well inside the arm window — the
+  re-open + clean close also rebalances the leaked module refcount.
+
+**When adding a test:** prefer `with_open(...)` or just `let wdt =
+sys.open_dev()?` (Drop handles cleanup).  Only reach for
+`close_without_v()` if you're explicitly validating the no-V kernel
+path, and document why.  Any test that leaves a `Watchdog` armed past
+its arm window belongs in `lab_dangerous.rs`.
 
 ### Real-reset tests are NOT auto-recovering
 
