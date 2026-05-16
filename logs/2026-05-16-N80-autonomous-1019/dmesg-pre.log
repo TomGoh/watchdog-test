@@ -1,0 +1,28 @@
+Kylin V11
+[   86.148903] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[   86.148948] [INFO] [RUST] probe: entry
+[   86.148962] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[   86.148964] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[   86.148966] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[   86.149236] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[   86.221278] [INFO] [RUST] start: WCS_EN written
+[   86.221307] [INFO] [RUST] stop: WCS cleared
+[   86.551857] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[   86.608526] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[   86.608571] [INFO] [RUST] probe: entry
+[   86.608582] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[   86.608584] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[   86.608586] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[   86.608892] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[   86.676433] [INFO] [RUST] start: WCS_EN written
+[   86.676467] [INFO] [RUST] stop: WCS cleared
+[   87.002774] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[   87.044293] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[   87.044340] [INFO] [RUST] probe: entry
+[   87.044353] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[   87.044355] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[   87.044357] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[   87.044639] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[   87.124155] [INFO] [RUST] start: WCS_EN written
+[   87.124187] [INFO] [RUST] stop: WCS cleared
+[   87.455839] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver

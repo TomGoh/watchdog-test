@@ -1,6 +1,6 @@
 ==========================================
 Run kind:    autonomous
-Started:     2026-05-16T09:20:36+08:00
+Started:     2026-05-16T10:19:59+08:00
 Target:      N80
 ==========================================
 
@@ -22,7 +22,8 @@ Kylin V11
   testing 2 watchdog(s):
     - "SBSA Generic Watchdog" (known: full per-driver suite)
     - "Software Watchdog (Rust)" (known: full per-driver suite)
-Pushing 5 binaries to N80:/tmp/watchdog-test …
+Pushing 6 binaries to N80:/tmp/watchdog-test …
+Kylin V11
 Kylin V11
 Kylin V11
 Kylin V11
@@ -48,7 +49,7 @@ test c09_timeleft_in_range ... ok
 test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] sbsa_gwdt: module init \xe2\x80\x94 registering platform driver
 ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.10s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.11s
 
 ----- common_extended-aaabc0d44818a28c (identity=SBSA Generic Watchdog) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
@@ -85,10 +86,48 @@ test sbsa_ext_04_setoptions_disable_enable ... ok
 test sbsa_ext_05_close_without_v_keeps_running ... ok
 test sbsa_ext_06_dmesg_version_consistent ... # detected SBSA GWDT version = 0
 ok
-test sbsa_ext_99_modprobe_cycle ... # SKIP: sbsa_gwdt-drv has a known kernel panic in the rmmod/unregister path. Set WATCHDOG_TEST_SBSA_MODPROBE_CYCLE=YES_IT_MAY_PANIC to run anyway.
+test sbsa_ext_99_modprobe_cycle ... # rmmod sbsa_gwdt-rust
+# modprobe sbsa_gwdt-rust
 ok
 
-test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.69s
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.80s
+
+----- gc_test-d3a8d8281c93d81e (identity=SBSA Generic Watchdog) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 4 tests
+test gc_01_device_info ... # 测试设备：watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+# sysfs 信息：identity="SBSA Generic Watchdog" timeout=10s nowayout=false state="inactive"
+# ioctl 信息：identity="SBSA Generic Watchdog" options=0x81a0 firmware_version=0
+# GC-01 通过：设备信息读取正常
+ok
+test gc_02_feed_within_timeout ... # 测试设备：watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+# 阶段 1：SETTIMEOUT 多值往返测试
+#   SETTIMEOUT(5) → 5s ✓
+#   SETTIMEOUT(10) → 10s ✓
+#   SETTIMEOUT(30) → 30s ✓
+# 阶段 2：连续喂狗 20s（timeout=10s，每 5s ping 一次）
+# GC-02 通过：累计喂狗 4 次，20s 内系统存活 —— 喂狗机制正常
+ok
+test gc_03_no_feed_reboot ... # SKIP: lab-CI test requires WATCHDOG_LAB_DANGEROUS=YES_REALLY (this test will REBOOT the machine on success)
+ok
+test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+# 对内核模块 "sbsa_gwdt-rust"（identity="SBSA Generic Watchdog"）反复加载/卸载 10 次
+# 第  1/10 轮通过
+# 第  2/10 轮通过
+# 第  3/10 轮通过
+# 第  4/10 轮通过
+# 第  5/10 轮通过
+# 第  6/10 轮通过
+# 第  7/10 轮通过
+# 第  8/10 轮通过
+# 第  9/10 轮通过
+# 第 10/10 轮通过
+# GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
+ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.26s
 
 
 ============================================================
@@ -112,7 +151,7 @@ test c09_timeleft_in_range ... ok
 test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
 ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.00s
 
 ----- common_extended-aaabc0d44818a28c (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
@@ -127,7 +166,7 @@ test c_ext_04_bootstatus_readable ... # bootstatus = 0x0000
 ok
 test c_ext_05_timeleft_progresses ... ok
 
-test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.51s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
 
 Kylin V11
 ----- softdog-01f76c1b8107e62d (identity=Software Watchdog (Rust)) -----
@@ -152,7 +191,44 @@ test softdog_ext_99_modprobe_cycle ... # rmmod softdog-rust
 # modprobe softdog-rust
 ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.57s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.58s
+
+----- gc_test-d3a8d8281c93d81e (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 4 tests
+test gc_01_device_info ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# sysfs 信息：identity="Software Watchdog (Rust)" timeout=60s nowayout=false state="inactive"
+# ioctl 信息：identity="Software Watchdog (Rust)" options=0x8180 firmware_version=0
+# GC-01 通过：设备信息读取正常
+ok
+test gc_02_feed_within_timeout ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# 阶段 1：SETTIMEOUT 多值往返测试
+#   SETTIMEOUT(5) → 5s ✓
+#   SETTIMEOUT(10) → 10s ✓
+#   SETTIMEOUT(30) → 30s ✓
+# 阶段 2：连续喂狗 120s（timeout=60s，每 30s ping 一次）
+# GC-02 通过：累计喂狗 4 次，120s 内系统存活 —— 喂狗机制正常
+ok
+test gc_03_no_feed_reboot ... # SKIP: lab-CI test requires WATCHDOG_LAB_DANGEROUS=YES_REALLY (this test will REBOOT the machine on success)
+ok
+test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# 对内核模块 "softdog-rust"（identity="Software Watchdog (Rust)"）反复加载/卸载 10 次
+# 第  1/10 轮通过
+# 第  2/10 轮通过
+# 第  3/10 轮通过
+# 第  4/10 轮通过
+# 第  5/10 轮通过
+# 第  6/10 轮通过
+# 第  7/10 轮通过
+# 第  8/10 轮通过
+# 第  9/10 轮通过
+# 第 10/10 轮通过
+# GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
+ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.69s
 
 
 Kylin V11
@@ -163,4 +239,4 @@ Reboot N80 to unload them.
 
 Done.
 
-Finished:    2026-05-16T09:23:12+08:00
+Finished:    2026-05-16T10:24:58+08:00

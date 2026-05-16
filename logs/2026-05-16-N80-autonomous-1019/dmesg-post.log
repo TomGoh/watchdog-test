@@ -1,0 +1,223 @@
+Kylin V11
+[   86.148903] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[   86.148948] [INFO] [RUST] probe: entry
+[   86.148962] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[   86.148964] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[   86.148966] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[   86.149236] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[   86.221278] [INFO] [RUST] start: WCS_EN written
+[   86.221307] [INFO] [RUST] stop: WCS cleared
+[   86.551857] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[   86.608526] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[   86.608571] [INFO] [RUST] probe: entry
+[   86.608582] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[   86.608584] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[   86.608586] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[   86.608892] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[   86.676433] [INFO] [RUST] start: WCS_EN written
+[   86.676467] [INFO] [RUST] stop: WCS cleared
+[   87.002774] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[   87.044293] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[   87.044340] [INFO] [RUST] probe: entry
+[   87.044353] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[   87.044355] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[   87.044357] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[   87.044639] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[   87.124155] [INFO] [RUST] start: WCS_EN written
+[   87.124187] [INFO] [RUST] stop: WCS cleared
+[   87.455839] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  848.581771] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  848.590342] [INFO] [RUST] probe: entry
+[  848.595222] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  848.602106] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  848.608799] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  848.618611] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  848.849692] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[  848.858132] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[  848.864919] [INFO] [RUST] No matching PCI device found
+[  849.141792] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[  852.216470] [INFO] [RUST] start: WCS_EN written
+[  852.222241] [INFO] [RUST] stop: WCS cleared
+[  852.227862] [INFO] [RUST] start: WCS_EN written
+[  852.233538] [INFO] [RUST] stop: WCS cleared
+[  852.239008] [INFO] [RUST] start: WCS_EN written
+[  852.244669] [INFO] [RUST] stop: WCS cleared
+[  852.250221] [INFO] [RUST] start: WCS_EN written
+[  852.255881] [INFO] [RUST] stop: WCS cleared
+[  852.261298] [INFO] [RUST] start: WCS_EN written
+[  852.266963] [INFO] [RUST] stop: WCS cleared
+[  854.272873] [INFO] [RUST] start: WCS_EN written
+[  854.278538] [INFO] [RUST] set_timeout: requested=30s clamped=30s WOR=750000000
+[  854.286904] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  854.295248] [INFO] [RUST] stop: WCS cleared
+[  854.300694] [INFO] [RUST] start: WCS_EN written
+[  854.306351] [INFO] [RUST] stop: WCS cleared
+[  854.311790] [INFO] [RUST] start: WCS_EN written
+[  854.317450] [INFO] [RUST] stop: WCS cleared
+[  854.543719] [INFO] [RUST] start: WCS_EN written
+[  854.549468] [INFO] [RUST] stop: WCS cleared
+[  854.554828] [INFO] [RUST] start: WCS_EN written
+[  854.560605] [INFO] [RUST] stop: WCS cleared
+[  854.566069] [INFO] [RUST] start: WCS_EN written
+[  854.571734] [INFO] [RUST] stop: WCS cleared
+[  854.577182] [INFO] [RUST] start: WCS_EN written
+[  854.582861] [INFO] [RUST] set_timeout: requested=3600s clamped=170s WOR=4250000000
+[  854.591571] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  854.599914] [INFO] [RUST] stop: WCS cleared
+[  854.605455] [INFO] [RUST] start: WCS_EN written
+[  854.611123] [INFO] [RUST] stop: WCS cleared
+[  854.616580] [INFO] [RUST] start: WCS_EN written
+[  856.122447] [INFO] [RUST] stop: WCS cleared
+[  856.519877] [INFO] [RUST] start: WCS_EN written
+[  856.525549] [INFO] [RUST] stop: WCS cleared
+[  856.531032] [INFO] [RUST] start: WCS_EN written
+[  856.536698] [INFO] [RUST] stop: WCS cleared
+[  856.546996] [INFO] [RUST] start: WCS_EN written
+[  876.554298] [INFO] [RUST] stop: WCS cleared
+[  876.560012] [INFO] [RUST] start: WCS_EN written
+[  876.565683] [INFO] [RUST] stop: WCS cleared
+[  876.571194] [INFO] [RUST] start: WCS_EN written
+[  876.576868] [INFO] [RUST] set_timeout: requested=1s clamped=1s WOR=25000000
+[  876.584961] [INFO] [RUST] set_timeout: requested=5s clamped=5s WOR=125000000
+[  876.593141] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  876.601511] [INFO] [RUST] set_timeout: requested=30s clamped=30s WOR=750000000
+[  876.609943] [INFO] [RUST] set_timeout: requested=60s clamped=60s WOR=1500000000
+[  876.618426] [INFO] [RUST] set_timeout: requested=80s clamped=80s WOR=2000000000
+[  876.626884] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  876.635240] [INFO] [RUST] stop: WCS cleared
+[  876.640904] [INFO] [RUST] start: WCS_EN written
+[  876.646772] [INFO] [RUST] stop: WCS cleared
+[  876.652177] [INFO] [RUST] start: WCS_EN written
+[  876.657848] [INFO] [RUST] stop: WCS cleared
+[  876.663370] [INFO] [RUST] start: WCS_EN written
+[  876.669056] [INFO] [RUST] set_timeout: requested=60s clamped=60s WOR=1500000000
+[  876.677502] [INFO] [RUST] stop: WCS cleared
+[  876.682830] [INFO] [RUST] start: WCS_EN written
+[  876.688500] watchdog: watchdog0: watchdog did not stop!
+[  878.195049] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  878.203410] [INFO] [RUST] stop: WCS cleared
+[  878.213383] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  878.250710] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  878.259276] [INFO] [RUST] probe: entry
+[  878.264172] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  878.271042] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  878.277737] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  878.286607] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  878.314299] [INFO] [RUST] start: WCS_EN written
+[  878.319967] [INFO] [RUST] stop: WCS cleared
+[  878.536541] [INFO] [RUST] start: WCS_EN written
+[  878.542307] [INFO] [RUST] stop: WCS cleared
+[  878.547749] [INFO] [RUST] start: WCS_EN written
+[  878.553504] [INFO] [RUST] stop: WCS cleared
+[  878.559375] [INFO] [RUST] start: WCS_EN written
+[  878.565086] [INFO] [RUST] stop: WCS cleared
+[  878.570454] [INFO] [RUST] start: WCS_EN written
+[  878.576149] [INFO] [RUST] set_timeout: requested=5s clamped=5s WOR=125000000
+[  878.584401] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  878.592826] [INFO] [RUST] set_timeout: requested=30s clamped=30s WOR=750000000
+[  878.601237] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  898.611197] [INFO] [RUST] stop: WCS cleared
+[  898.616910] [INFO] [RUST] start: WCS_EN written
+[  898.622570] [INFO] [RUST] stop: WCS cleared
+[  898.629683] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  898.663266] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  898.671832] [INFO] [RUST] probe: entry
+[  898.676717] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  898.683590] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  898.690284] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  898.699208] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  898.739480] [INFO] [RUST] start: WCS_EN written
+[  898.745157] [INFO] [RUST] stop: WCS cleared
+[  898.751962] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  898.786397] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  898.794961] [INFO] [RUST] probe: entry
+[  898.799855] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  898.806730] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  898.813424] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  898.822031] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  898.859481] [INFO] [RUST] start: WCS_EN written
+[  898.865159] [INFO] [RUST] stop: WCS cleared
+[  898.872343] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  898.911171] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  898.919741] [INFO] [RUST] probe: entry
+[  898.924624] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  898.931494] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  898.938188] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  898.946917] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  898.983505] [INFO] [RUST] start: WCS_EN written
+[  898.989173] [INFO] [RUST] stop: WCS cleared
+[  898.996250] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  899.027757] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  899.036322] [INFO] [RUST] probe: entry
+[  899.041205] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  899.048082] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  899.054778] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  899.063406] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  899.095595] [INFO] [RUST] start: WCS_EN written
+[  899.101263] [INFO] [RUST] stop: WCS cleared
+[  899.107937] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  899.158516] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  899.167088] [INFO] [RUST] probe: entry
+[  899.171972] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  899.178840] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  899.185533] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  899.194145] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  899.219542] [INFO] [RUST] start: WCS_EN written
+[  899.225215] [INFO] [RUST] stop: WCS cleared
+[  899.232344] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  899.262584] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  899.271158] [INFO] [RUST] probe: entry
+[  899.276037] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  899.282908] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  899.289603] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  899.298257] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  899.327497] [INFO] [RUST] start: WCS_EN written
+[  899.333163] [INFO] [RUST] stop: WCS cleared
+[  899.340012] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  899.371260] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  899.379824] [INFO] [RUST] probe: entry
+[  899.384706] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  899.391579] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  899.398273] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  899.406880] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  899.447518] [INFO] [RUST] start: WCS_EN written
+[  899.453181] [INFO] [RUST] stop: WCS cleared
+[  899.459880] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  899.502253] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  899.510817] [INFO] [RUST] probe: entry
+[  899.515698] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  899.522567] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  899.529259] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  899.537854] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  899.567631] [INFO] [RUST] start: WCS_EN written
+[  899.573311] [INFO] [RUST] stop: WCS cleared
+[  899.580087] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  899.615208] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  899.623774] [INFO] [RUST] probe: entry
+[  899.628657] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  899.635537] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  899.642233] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  899.650854] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  899.675584] [INFO] [RUST] start: WCS_EN written
+[  899.681254] [INFO] [RUST] stop: WCS cleared
+[  899.688332] [INFO] [RUST] sbsa_gwdt: module exit — unregistering platform driver
+[  899.723227] [INFO] [RUST] sbsa_gwdt: module init — registering platform driver
+[  899.731787] [INFO] [RUST] probe: entry
+[  899.736669] [INFO] [RUST] probe: MMIO mapped, clk=50000000 Hz
+[  899.743539] [INFO] [RUST] probe: version=0 mediatek_quirk=0
+[  899.750233] [INFO] [RUST] set_timeout: requested=10s clamped=10s WOR=250000000
+[  899.758861] sbsa-gwdt sbsa-gwdt.0: Initialized with 10s timeout @ 50000000 Hz, action=0.
+[  899.787642] [INFO] [RUST] start: WCS_EN written
+[  899.793311] [INFO] [RUST] stop: WCS cleared
+[ 1024.143177] watchdog: watchdog1: watchdog did not stop!
+[ 1025.684042] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1145.985840] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.041501] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.104053] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.173046] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.237355] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.289299] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.356057] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.421204] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.501780] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[ 1146.584764] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
