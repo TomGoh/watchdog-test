@@ -231,7 +231,9 @@ fn softdog_ext_05_close_without_v_keeps_running() -> Result<()> {
 
     {
         let wdt = sys.open_dev()?;
-        drop(wdt); // close-without-V — kernel must KEEP THE TIMER RUNNING
+        // Deliberately close without 'V' — see sbsa_ext_05 for why
+        // close_without_v() is required instead of drop().
+        wdt.close_without_v();
     }
 
     std::thread::sleep(Duration::from_millis(1500));

@@ -96,12 +96,35 @@ ioctl_read!(wdioc_get_timeleft,    WATCHDOG_IOCTL_BASE, 10, i32);
 // ============================================================================
 
 /// Open `/dev/watchdog0` (or another `/dev/watchdogN`) for ioctl + write
-/// access.  The file is closed *without* magic-V on `Drop`, so unless
-/// you call [`Self::magic_close`] the kernel will keep the watchdog
-/// running — by design (`nowayout` semantics).
+/// access.
+///
+/// **Drop semantics:** `Drop` writes a single magic-'V' byte
+/// (best-effort, errors ignored) before closing the fd. This matches
+/// the userspace contract `WDIOF_MAGICCLOSE` expects: any close
+/// without 'V' leaves the kernel's `WDOG_HW_RUNNING` set and
+/// unbalances the module refcount, blocking `rmmod`. Tests that
+/// **want** to exercise the no-'V' kernel path must call
+/// [`Self::close_without_v`] explicitly.
+///
+/// See `drivers/watchdog/watchdog_dev.c:watchdog_release` for the
+/// kernel side of this contract.
 pub struct Watchdog {
     file: File,
     path: PathBuf,
+    /// When true (the default), `Drop` writes 'V' before closing the fd.
+    /// Cleared by `magic_close` (to suppress a redundant second write)
+    /// and by `close_without_v` (to deliberately exercise the no-V path).
+    drop_writes_v: bool,
+}
+
+impl Drop for Watchdog {
+    fn drop(&mut self) {
+        if self.drop_writes_v {
+            // Best-effort: if the fd is already bad we're tearing down
+            // anyway. The File's own Drop closes the fd next.
+            let _ = self.file.write_all(b"V");
+        }
+    }
 }
 
 impl Watchdog {
@@ -114,7 +137,7 @@ impl Watchdog {
             .write(true)
             .open(&path)
             .with_context(|| format!("open({})", path.display()))?;
-        Ok(Self { file, path })
+        Ok(Self { file, path, drop_writes_v: true })
     }
 
     pub fn path(&self) -> &Path { &self.path }
@@ -176,10 +199,35 @@ impl Watchdog {
     /// caller wants the watchdog to actually stop on close.  After this
     /// call the [`Watchdog`] is consumed; you'll need [`Self::open`]
     /// again to come back.
+    ///
+    /// Functionally redundant with the default `Drop` (which also
+    /// writes 'V'); use this when you want errors from the 'V' write
+    /// surfaced via `Result`.  Suppresses Drop's V-write to avoid a
+    /// redundant second write.
     pub fn magic_close(mut self) -> Result<()> {
         self.file.write_all(b"V").context("write 'V'")?;
-        // Drop closes the fd; kernel sees clean magic-close.
+        self.drop_writes_v = false;
+        // self drops at end of function; File's Drop closes the fd.
         Ok(())
+    }
+
+    /// Close WITHOUT writing the magic 'V' byte.  Bypasses the default
+    /// Drop-writes-V behavior so callers can deliberately exercise the
+    /// kernel's `watchdog_release` no-magic-V path (which prints
+    /// `watchdog%d: watchdog did not stop!` and keeps the kernel
+    /// in-kernel keepalive running).
+    ///
+    /// **Leaves the module refcount unbalanced.** Per
+    /// `watchdog_dev.c:watchdog_release`, the kernel only calls
+    /// `module_put` when `!watchdog_hw_running(wdd)` at release time;
+    /// closing without 'V' keeps `WDOG_HW_RUNNING` set, so no
+    /// `module_put` runs and `rmmod` will fail with `-EBUSY`.  Use
+    /// only in tests that explicitly verify the close-without-V
+    /// semantics, and order them LAST in their binary.
+    pub fn close_without_v(mut self) {
+        self.drop_writes_v = false;
+        // self drops at end of function; File's Drop just closes the
+        // fd — kernel sees a close with no 'V' in its write buffer.
     }
 
     /// Write a single byte (any value other than 'V') as an *implicit*

@@ -274,7 +274,11 @@ fn sbsa_ext_05_close_without_v_keeps_running() -> Result<()> {
 
     {
         let wdt = sys.open_dev()?;
-        drop(wdt); // close-without-V — kernel must KEEP THE TIMER RUNNING
+        // Deliberately close without 'V' — exercises the kernel's
+        // watchdog_release no-magic-V path.  Must use close_without_v()
+        // (not drop) because Watchdog::Drop normally writes 'V' as a
+        // safety net; we need to override that here.
+        wdt.close_without_v();
     }
 
     std::thread::sleep(Duration::from_millis(1500));
