@@ -1,6 +1,6 @@
 ==========================================
 Run kind:    autonomous
-Started:     2026-05-16T10:19:59+08:00
+Started:     2026-05-20T14:16:25+08:00
 Target:      N80
 ==========================================
 
@@ -9,12 +9,11 @@ Kylin V11
   target arch = aarch64 → aarch64-unknown-linux-musl
 Enumerating pre-existing watchdogs …
 Kylin V11
-  before modprobe: 
+  before modprobe: Software Watchdog (Rust)
 Kylin V11
-Loading our managed watchdog drivers (nowayout=0) …
+Loading our managed watchdog drivers (nowayout=0, arch=aarch64): sbsa_gwdt-rust softdog-rust
 Kylin V11
   modprobe sbsa_gwdt-rust nowayout=0
-Kylin V11
 Kylin V11
   modprobe softdog-rust nowayout=0
 Re-enumerating /sys/class/watchdog after bulk modprobe …
@@ -49,7 +48,7 @@ test c09_timeleft_in_range ... ok
 test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] sbsa_gwdt: module init \xe2\x80\x94 registering platform driver
 ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.11s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.00s
 
 ----- common_extended-aaabc0d44818a28c (identity=SBSA Generic Watchdog) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
@@ -64,7 +63,7 @@ test c_ext_04_bootstatus_readable ... # bootstatus = 0x0000
 ok
 test c_ext_05_timeleft_progresses ... ok
 
-test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.58s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
 
 Kylin V11
 ----- sbsa_gwdt-e6ac78375c1f3237 (identity=SBSA Generic Watchdog) -----
@@ -90,7 +89,7 @@ test sbsa_ext_99_modprobe_cycle ... # rmmod sbsa_gwdt-rust
 # modprobe sbsa_gwdt-rust
 ok
 
-test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.80s
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.59s
 
 ----- gc_test-d3a8d8281c93d81e (identity=SBSA Generic Watchdog) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
@@ -127,7 +126,7 @@ test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog0 identity="SBSA Gene
 # GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
 ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.26s
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.62s
 
 
 ============================================================
@@ -138,7 +137,7 @@ Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
 running 10 tests
-test c01_sysfs_entry_exists ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+test c01_sysfs_entry_exists ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
 ok
 test c02_identity_consistent ... ok
 test c03_options_advertise_keepaliveping ... ok
@@ -158,7 +157,7 @@ Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
 running 5 tests
-test c_ext_01_write_byte_ping ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+test c_ext_01_write_byte_ping ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
 ok
 test c_ext_02_concurrent_open_ebusy ... ok
 test c_ext_03_set_timeout_clamps_oversize ... ok
@@ -191,19 +190,19 @@ test softdog_ext_99_modprobe_cycle ... # rmmod softdog-rust
 # modprobe softdog-rust
 ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.58s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.57s
 
 ----- gc_test-d3a8d8281c93d81e (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
 running 4 tests
-test gc_01_device_info ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+test gc_01_device_info ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
 # sysfs 信息：identity="Software Watchdog (Rust)" timeout=60s nowayout=false state="inactive"
-# ioctl 信息：identity="Software Watchdog (Rust)" options=0x8180 firmware_version=0
+# ioctl 信息：identity="Software Watchdog (Rust)" options=0x8380 firmware_version=0
 # GC-01 通过：设备信息读取正常
 ok
-test gc_02_feed_within_timeout ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+test gc_02_feed_within_timeout ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
 # 阶段 1：SETTIMEOUT 多值往返测试
 #   SETTIMEOUT(5) → 5s ✓
 #   SETTIMEOUT(10) → 10s ✓
@@ -213,7 +212,7 @@ test gc_02_feed_within_timeout ... # 测试设备：watchdog1 identity="Software
 ok
 test gc_03_no_feed_reboot ... # SKIP: lab-CI test requires WATCHDOG_LAB_DANGEROUS=YES_REALLY (this test will REBOOT the machine on success)
 ok
-test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
 # 对内核模块 "softdog-rust"（identity="Software Watchdog (Rust)"）反复加载/卸载 10 次
 # 第  1/10 轮通过
 # 第  2/10 轮通过
@@ -228,15 +227,14 @@ test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog1 identity="Software 
 # GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
 ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.69s
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.58s
 
 
 Kylin V11
-Note: leaving these modules loaded (rmmod is unsafe — see deploy.sh comment):
-  sbsa_gwdt_rust
-  softdog_rust
-Reboot N80 to unload them.
+Cleanup: rmmod modules loaded by this run:
+Kylin V11
+  rmmod sbsa_gwdt_rust
 
 Done.
 
-Finished:    2026-05-16T10:24:58+08:00
+Finished:    2026-05-20T14:21:23+08:00

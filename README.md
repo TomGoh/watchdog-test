@@ -206,29 +206,45 @@ the appropriate test set per discovered identity.
 
 ```bash
 # Autonomous, reboot-safe.  Discovers + tests every loadable watchdog
-# (sbsa_gwdt-drv, sp5100_tco-drv, softdog-drv, plus any third-party
+# (sbsa_gwdt-rust, sp5100_tco-rust, softdog-rust, plus any third-party
 # drivers like iTCO_wdt the kernel happens to ship).
 ./scripts/deploy.sh <TARGET>
 
 # Lab tier — DESTRUCTIVE.  Loads ONLY the named module and runs the
 # real-reboot lab tests against its watchdog.
-./scripts/deploy.sh <TARGET> --lab sbsa_gwdt-drv
-./scripts/deploy.sh <TARGET> --lab softdog-drv
+./scripts/deploy.sh <TARGET> --lab sbsa_gwdt-rust
+./scripts/deploy.sh <TARGET> --lab softdog-rust
 ```
 
 Lab mode prints a 5-second confirmation banner before firing; press
 Ctrl-C in that window to abort.
 
+**What `deploy.sh` modprobes (arch-aware):**
+- **x86_64**: `sp5100_tco-rust` + `softdog-rust`. SP5100 only registers
+  if the AMD/Hygon southbridge is present; otherwise its probe fails
+  with `-ENODEV` and is silently skipped.
+- **aarch64**: `sbsa_gwdt-rust` + `softdog-rust`. Likewise the SBSA
+  generic watchdog only registers when the platform exposes one.
+
+Drivers from the wrong arch (e.g. `sbsa_gwdt-rust` on x86) are not even
+attempted — they'd just be noise.
+
 **What gets run per discovered identity:**
-- **Known driver** (`sbsa_gwdt-drv` / `sp5100_tco-drv` / `softdog-drv`)
-  — `common_conformance` + `common_extended` + the per-driver binary,
-  all with `--include-ignored` (full extended coverage).
+- **Known driver** (`sbsa_gwdt-rust` / `sp5100_tco-rust` / `softdog-rust`)
+  — `common_conformance` + `common_extended` + the per-driver binary
+  + `gc_test`, all with `--include-ignored` (full extended coverage).
 - **Unknown driver** (anything else that registered a `/sys/class/watchdog/*`)
-  — `common_conformance` + `common_extended` only (basic uapi
-  conformance check).
+  — `common_conformance` + `common_extended` + `gc_test` only (basic
+  uapi conformance).
 
 After the run the script `rmmod`s every module it loaded and leaves
-pre-existing modules untouched.
+pre-existing modules (PCI auto-probed at boot, etc.) untouched.
+`rmmod` was historically unsafe because of an exit/unregister race in
+the Rust sbsa_gwdt and softdog ports — that race was fixed by kernel
+commits `80f0d9ea4d3` (sync-cancel hrtimers + ops.owner threading) and
+`acba0d48d28a` (THIS_MODULE → ops.owner for all Rust watchdog ports).
+`gc_04_modprobe_cycle_x10` exercises 10× rmmod/modprobe per identity
+every run, so any regression would be caught immediately.
 
 ### 4. (Optional) Archive the run
 
@@ -242,7 +258,7 @@ written for humans.
 
 ```bash
 ./scripts/capture-run.sh <TARGET>                  # autonomous run
-./scripts/capture-run.sh <TARGET> --lab softdog-drv # lab run
+./scripts/capture-run.sh <TARGET> --lab softdog-rust # lab run
 ```
 
 Arguments mirror `deploy.sh`:
@@ -458,9 +474,9 @@ rustup target add aarch64-unknown-linux-musl x86_64-unknown-linux-musl
 ./scripts/build.sh x86_64
 ```
 
-On x86 targets the autonomous path picks up `sp5100_tco-drv` (AMD
-chipsets), `iTCO_wdt` (Intel), `softdog-drv`, etc.; on ARM targets it
-picks up `sbsa_gwdt-drv`, `softdog-drv`, and any board-specific
+On x86 targets the autonomous path picks up `sp5100_tco-rust` (AMD
+chipsets), `iTCO_wdt` (Intel), `softdog-rust`, etc.; on ARM targets it
+picks up `sbsa_gwdt-rust`, `softdog-rust`, and any board-specific
 drivers in the kernel tree.
 
 ---
@@ -473,7 +489,7 @@ Deliberately not covered by this suite:
   on the target.  Risk of bricking a developer workstation.  Better
   tested on a dedicated lab box.
 - **`nowayout=1` enforcement**: requires the module to be loaded with
-  `nowayout=1`, which means `rmmod` + `modprobe sbsa_gwdt-drv
+  `nowayout=1`, which means `rmmod` + `modprobe sbsa_gwdt-rust
   nowayout=1` mid-suite.  Achievable but invasive; would belong in
   the lab tier with its own consent gate.
 - **Two-stage `action=1` IRQ + panic path**: would require kernel

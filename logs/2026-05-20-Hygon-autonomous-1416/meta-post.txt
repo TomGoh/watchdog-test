@@ -1,0 +1,11 @@
+--- post-run lsmod (watchdog-related) ---
+Kylin V11
+
+--- post-run /sys/class/watchdog inventory ---
+Kylin V11
+/sys/class/watchdog/watchdog0
+  identity     = SP5100 TCO timer
+  timeout      = 60
+  state        = inactive
+  nowayout     = 0
+  bootstatus   = 0

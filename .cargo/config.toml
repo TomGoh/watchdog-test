@@ -1,0 +1,28 @@
+# Cross-build linker configuration for watchdog-test.
+#
+# The deploy script auto-selects {aarch64,x86_64}-unknown-linux-musl based
+# on the target's `uname -m`, so on a heterogeneous build host (e.g.
+# building for an x86_64 box from an aarch64 dev laptop, or vice versa)
+# cargo needs to know which linker to invoke for the cross target.
+#
+# Using rust-lld (LLVM's lld, bundled with rustup's llvm-tools component)
+# avoids depending on a system musl-cross-make / aarch64-linux-musl-gcc.
+# Combined with the static-musl target this gives a true "scp the binary
+# and run" experience with zero target-side dependencies and no
+# host-side toolchain install beyond rustup.
+
+[target.aarch64-unknown-linux-musl]
+linker = "rust-lld"
+
+[target.x86_64-unknown-linux-musl]
+linker = "rust-lld"
+
+# Glibc fallbacks — used if you explicitly switch the triple to -gnu via
+# scripts/build.sh (the deploy default is musl).  These require the
+# corresponding cross gcc package on the build host
+# (gcc-{aarch64,x86_64}-linux-gnu on Debian/Ubuntu).
+[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+
+[target.x86_64-unknown-linux-gnu]
+linker = "x86_64-linux-gnu-gcc"

@@ -80,7 +80,7 @@ cd "$(dirname "$0")/.."
 per_driver_binary_for_identity() {
     case "$1" in
         "SBSA Generic Watchdog")    echo "sbsa_gwdt" ;;
-        "SP5100 TCO Watchdog")      echo "sp5100_tco" ;;
+        "SP5100 TCO Watchdog"|"SP5100 TCO timer") echo "sp5100_tco" ;;
         "Software Watchdog (Rust)") echo "softdog" ;;
         *) return 1 ;;
     esac
@@ -233,10 +233,24 @@ PRE_LOADED_MODULES="$(ssh "$TARGET" 'lsmod | awk "NR>1 {print \$1}"' || true)"
 # Without this, on Kylin we observed nowayout=Y by default — which
 # makes magic-V close a no-op, blocks SETOPTIONS DISABLECARD, and
 # turns rmmod into a delayed reboot/panic.
-echo "Loading our managed watchdog drivers (nowayout=0) …"
-for mod in sbsa_gwdt-rust sp5100_tco-rust softdog-rust; do
+# Arch-specific module list.  The "hardware" driver candidate is paired
+# with softdog-rust so every supported arch ends up exercising at least
+# two managed identities — a hardware-backed one (when probe succeeds)
+# and the pure-software softdog (always works).  We do NOT try drivers
+# from the wrong arch: sp5100_tco-rust on arm64 (or sbsa_gwdt-rust on
+# x86_64) would just fail probe with -ENODEV, producing noise.
+case "$ARCH" in
+    x86_64)  MODULES_TO_LOAD="sp5100_tco-rust softdog-rust" ;;
+    aarch64) MODULES_TO_LOAD="sbsa_gwdt-rust softdog-rust" ;;
+    *)       MODULES_TO_LOAD="softdog-rust" ;;
+esac
+
+echo "Loading our managed watchdog drivers (nowayout=0, arch=$ARCH): $MODULES_TO_LOAD"
+for mod in $MODULES_TO_LOAD; do
     if ssh "$TARGET" "sudo modprobe $mod nowayout=0 2>/dev/null"; then
         echo "  modprobe $mod nowayout=0"
+    else
+        echo "  modprobe $mod failed (driver not applicable on this hardware — skipping)"
     fi
 done
 sleep 1
@@ -295,18 +309,19 @@ for id in "${IDENTITIES[@]}"; do
 done
 
 # ---------------------------------------------------------------------------
-# Intentionally NO cleanup-rmmod step.
+# Cleanup: rmmod the modules WE loaded (anything in lsmod that wasn't
+# present before the script started).  Pre-existing modules (PCI auto-
+# probed at boot, etc.) are left alone.
 #
-# History: an earlier version of this script `rmmod`'d every module it
-# loaded.  On a real ARMv8 box (Kylin/Phytium with the Rust sbsa_gwdt
-# port) this panicked the kernel — the Rust port's exit/unregister
-# path has a race where module exit returns before
-# watchdog_unregister_device fully completes, and a subsequent op
-# (next modprobe / hardware refresh) lands on stale state.  See the
-# kernel-side bug report.
-#
-# Until that's fixed we leave the modules loaded.  Reboot the target
-# to clear them.
+# Historical note: this step used to be omitted because the Rust
+# sbsa_gwdt / softdog ports had a module-exit race that panicked the
+# kernel on rmmod.  Both have been fixed in kernel commits:
+#   80f0d9ea4d3 — sync-cancel hrtimers in softdog_exit_rust + ops.owner
+#                  threading for try_module_get correctness
+#   acba0d48d28a — thread THIS_MODULE through ops.owner & driver.owner
+#                  for all Rust watchdog ports (incl. sp5100_tco)
+# `gc_04_modprobe_cycle_x10` exercises 10x rmmod/modprobe per identity
+# every run and would catch a regression immediately.
 # ---------------------------------------------------------------------------
 echo
 POST_LOADED_MODULES="$(ssh "$TARGET" 'lsmod | awk "NR>1 {print \$1}"' || true)"
@@ -314,9 +329,15 @@ LOADED_BY_US="$(comm -23 \
     <(echo "$POST_LOADED_MODULES" | sort -u) \
     <(echo "$PRE_LOADED_MODULES"  | sort -u))"
 if [ -n "$LOADED_BY_US" ]; then
-    echo "Note: leaving these modules loaded (rmmod is unsafe — see deploy.sh comment):"
-    echo "$LOADED_BY_US" | sed 's/^/  /'
-    echo "Reboot $TARGET to unload them."
+    echo "Cleanup: rmmod modules loaded by this run:"
+    while IFS= read -r mod; do
+        [ -z "$mod" ] && continue
+        if ssh "$TARGET" "sudo rmmod $mod 2>/dev/null"; then
+            echo "  rmmod $mod"
+        else
+            echo "  rmmod $mod failed (still in use? — left loaded)"
+        fi
+    done <<< "$LOADED_BY_US"
 fi
 
 echo

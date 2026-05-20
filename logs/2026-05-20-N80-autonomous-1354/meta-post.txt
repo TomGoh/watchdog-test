@@ -1,17 +1,9 @@
 --- post-run lsmod (watchdog-related) ---
 Kylin V11
 softdog_rust           12288  0
-sbsa_gwdt_rust         12288  0
 
 --- post-run /sys/class/watchdog inventory ---
 Kylin V11
-/sys/class/watchdog/watchdog0
-  identity     = SBSA Generic Watchdog
-  timeout      = 10
-  pretimeout   = 0
-  state        = inactive
-  nowayout     = 0
-  bootstatus   = 0
 /sys/class/watchdog/watchdog1
   identity     = Software Watchdog (Rust)
   timeout      = 60

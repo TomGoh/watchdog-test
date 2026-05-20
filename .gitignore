@@ -3,9 +3,12 @@
 Cargo.lock
 .DS_Store
 
-# capture-run.sh archives — keep one baseline; ignore future runs
+# capture-run.sh archives — keep selected baselines; ignore other runs
 logs/[0-9][0-9][0-9][0-9]-*/
-!logs/2026-05-16-N80-autonomous-1019/
+!logs/2026-05-20-Hygon-autonomous-1346/
+!logs/2026-05-20-Hygon-autonomous-1416/
+!logs/2026-05-20-N80-autonomous-1354/
+!logs/2026-05-20-N80-autonomous-1416/
 
 # Brainstorming docs (not part of codebase)
 docs/superpowers/

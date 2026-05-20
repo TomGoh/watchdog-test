@@ -48,7 +48,7 @@ fn module_for_identity(id: &str) -> Option<&'static str> {
     match id {
         "SBSA Generic Watchdog" => Some("sbsa_gwdt-rust"),
         "Software Watchdog (Rust)" => Some("softdog-rust"),
-        "SP5100 TCO Watchdog" => Some("sp5100_tco-rust"),
+        "SP5100 TCO Watchdog" | "SP5100 TCO timer" => Some("sp5100_tco-rust"),
         _ => None,
     }
 }
