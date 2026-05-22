@@ -113,8 +113,24 @@ echo "  wrote meta.txt"
 # 2. Pre-run dmesg snapshot.
 # ---------------------------------------------------------------------------
 DMESG_FILTER='RUST|sbsa-gwdt|sbsa_gwdt|SBSA Generic|watchdog|WDT|wdat|softdog|sp5100|iTCO|hpwdt|it87'
-ssh "$TARGET" "dmesg | grep -iE '$DMESG_FILTER'" \
-    > "$RUN_DIR/dmesg-pre.log" 2>&1 || true
+
+capture_dmesg() {
+    local out="$1"
+    local raw="${out}.raw"
+
+    # Some targets restrict dmesg to privileged users
+    # (kernel.dmesg_restrict=1).  Use non-interactive sudo so capture-run
+    # never blocks waiting for a password; sudo failures are preserved in
+    # the output file for debugging.
+    if ssh "$TARGET" "sudo -n dmesg" > "$raw" 2>&1; then
+        grep -iE "$DMESG_FILTER" "$raw" > "$out" || true
+    else
+        cp "$raw" "$out"
+    fi
+    rm -f "$raw"
+}
+
+capture_dmesg "$RUN_DIR/dmesg-pre.log"
 echo "  wrote dmesg-pre.log ($(wc -l <"$RUN_DIR/dmesg-pre.log") lines)"
 
 # ---------------------------------------------------------------------------
@@ -144,8 +160,7 @@ echo "  wrote tests.log"
 # ---------------------------------------------------------------------------
 # 4. Post-run snapshots.
 # ---------------------------------------------------------------------------
-ssh "$TARGET" "dmesg | grep -iE '$DMESG_FILTER'" \
-    > "$RUN_DIR/dmesg-post.log" 2>&1 || true
+capture_dmesg "$RUN_DIR/dmesg-post.log"
 echo "  wrote dmesg-post.log ($(wc -l <"$RUN_DIR/dmesg-post.log") lines)"
 
 diff "$RUN_DIR/dmesg-pre.log" "$RUN_DIR/dmesg-post.log" \

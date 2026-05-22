@@ -10,6 +10,9 @@ port on real ARMv8 hardware: **31/31 fast-tier tests pass, 2/2
 lab-tier tests prove both the reset path and the clean-shutdown
 path.**
 
+For a table-oriented test plan and copy-pasteable ARM64 / x86_64
+terminal examples, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
+
 ---
 
 ## How this works (at a glance)
@@ -63,6 +66,7 @@ works on your build host, the test scripts will work too.
 
 - [What you need](#what-you-need)
 - [How it's structured](#how-its-structured)
+- [Testing guide](TESTING_GUIDE.md)
 - [Quick start](#quick-start)
   - [1. Build the test binaries](#1-build-the-test-binaries)
   - [2. Set up SSH access to your target](#2-set-up-ssh-access-to-your-target)
@@ -279,8 +283,8 @@ What ends up inside each run dir:
 |---|---|
 | `meta.txt` | pre-run target hostname, `uname -a`, `lsmod` snapshot, `/sys/class/watchdog/*` dump |
 | `meta-post.txt` | same snapshots taken AFTER the run (so you can see what changed) |
-| `dmesg-pre.log` | watchdog-relevant `dmesg` lines BEFORE the run |
-| `dmesg-post.log` | same filter AFTER the run |
+| `dmesg-pre.log` | watchdog-relevant `sudo -n dmesg` lines BEFORE the run |
+| `dmesg-post.log` | same sudo dmesg filter AFTER the run |
 | `dmesg-delta.log` | the diff — kernel-log lines this specific run caused |
 | `tests.log` | full stdout from `deploy.sh` (one section per discovered identity) |
 

@@ -38,9 +38,9 @@ creates a fresh directory.
 | File | Source | Contents |
 |---|---|---|
 | `meta.txt` | written by `capture-run.sh` BEFORE the run | run kind, target hostname, `uname -a`, `uptime`, pre-run `lsmod` filtered to `wdt\|watchdog\|softdog`, pre-run snapshot of `/sys/class/watchdog/*` (identity / timeout / pretimeout / state / nowayout / bootstatus) |
-| `dmesg-pre.log` | `ssh <TARGET> 'dmesg \| grep -iE "RUST\|…"'` BEFORE the run | watchdog-relevant kernel-log lines that already existed at the start (with original timestamps) |
+| `dmesg-pre.log` | `ssh <TARGET> 'sudo -n dmesg'` filtered locally BEFORE the run | watchdog-relevant kernel-log lines that already existed at the start (with original timestamps). Uses non-interactive sudo because some targets restrict direct `dmesg` access. |
 | `tests.log` | full stdout of `./scripts/deploy.sh <TARGET>` (or `… --lab <module>`) | per-test-binary stdout in invocation order, including individual `test foo … ok / FAILED` lines, SKIP markers, and any `# probe:` / `# rust lifecycle:` annotations |
-| `dmesg-post.log` | same grep, AFTER the tests finish | the same filter at the end of the run |
+| `dmesg-post.log` | same sudo dmesg capture and local filter, AFTER the tests finish | the same filter at the end of the run |
 | `dmesg-delta.log` | `diff` of pre vs post | the kernel-log lines added by THIS test run — usually the most interesting view |
 | `meta-post.txt` | snapshots taken AFTER the run | post-run `lsmod` and `/sys/class/watchdog/*` dump, so you can see what changed (modules loaded, devices appeared/disappeared) |
 
