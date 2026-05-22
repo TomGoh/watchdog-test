@@ -1,6 +1,6 @@
 ==========================================
 Run kind:    autonomous
-Started:     2026-05-20T13:54:00+08:00
+Started:     2026-05-22T16:37:13+08:00
 Target:      N80
 ==========================================
 
@@ -30,7 +30,7 @@ Kylin V11
 ============================================================
 Testing identity: "SBSA Generic Watchdog"
 ============================================================
------ common_conformance-55a4900b3c8693c9 (identity=SBSA Generic Watchdog) -----
+----- common_conformance-33dfedf8845cb0cc (identity=SBSA Generic Watchdog) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -50,7 +50,7 @@ ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.00s
 
------ common_extended-aaabc0d44818a28c (identity=SBSA Generic Watchdog) -----
+----- common_extended-6e8eede9a4b29532 (identity=SBSA Generic Watchdog) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -66,7 +66,7 @@ test c_ext_05_timeleft_progresses ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
 
 Kylin V11
------ sbsa_gwdt-e6ac78375c1f3237 (identity=SBSA Generic Watchdog) -----
+----- sbsa_gwdt-86b55197acb4579f (identity=SBSA Generic Watchdog) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -89,9 +89,9 @@ test sbsa_ext_99_modprobe_cycle ... # rmmod sbsa_gwdt-rust
 # modprobe sbsa_gwdt-rust
 ok
 
-test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.57s
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.56s
 
------ gc_test-d3a8d8281c93d81e (identity=SBSA Generic Watchdog) -----
+----- gc_test-fd1a5ce16258aad2 (identity=SBSA Generic Watchdog) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -126,13 +126,13 @@ test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog0 identity="SBSA Gene
 # GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
 ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.60s
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.68s
 
 
 ============================================================
 Testing identity: "Software Watchdog (Rust)"
 ============================================================
------ common_conformance-55a4900b3c8693c9 (identity=Software Watchdog (Rust)) -----
+----- common_conformance-33dfedf8845cb0cc (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -152,7 +152,7 @@ ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.00s
 
------ common_extended-aaabc0d44818a28c (identity=Software Watchdog (Rust)) -----
+----- common_extended-6e8eede9a4b29532 (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -168,7 +168,7 @@ test c_ext_05_timeleft_progresses ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
 
 Kylin V11
------ softdog-01f76c1b8107e62d (identity=Software Watchdog (Rust)) -----
+----- softdog-54a205da0ffdda2e (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -190,9 +190,9 @@ test softdog_ext_99_modprobe_cycle ... # rmmod softdog-rust
 # modprobe softdog-rust
 ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.58s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.56s
 
------ gc_test-d3a8d8281c93d81e (identity=Software Watchdog (Rust)) -----
+----- gc_test-fd1a5ce16258aad2 (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -227,7 +227,7 @@ test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog1 identity="Software 
 # GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
 ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.63s
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.52s
 
 
 Kylin V11
@@ -237,4 +237,4 @@ Kylin V11
 
 Done.
 
-Finished:    2026-05-20T13:58:58+08:00
+Finished:    2026-05-22T16:42:11+08:00

@@ -1,0 +1,41 @@
+[    0.088414] Memory: 16071832K/16633920K available (24576K kernel code, 6009K rwdata, 15756K rodata, 4552K init, 5648K bss, 561832K reserved, 0K cma-reserved)
+[    0.259311] NMI watchdog: Enabled. Permanently consumes one hw-PMU counter.
+[    0.373795] Initialise system trusted keyrings
+[    1.528010] hid-generic 0003:093A:2510.0001: Rust input,hidraw0: USB HID v1.11 Mouse [PixArt USB Optical Mouse] on usb-0000:04:00.3-1/input0
+[    2.664413] hid-generic 0003:1C4F:0002.0002: Rust input,hidraw1: USB HID v1.10 Keyboard [SIGMACHIP USB Keyboard] on usb-0000:04:00.3-2.1/input0
+[    2.724463] hid-generic 0003:1C4F:0002.0003: Rust input,hidraw2: USB HID v1.10 Device [SIGMACHIP USB Keyboard] on usb-0000:04:00.3-2.1/input1
+[    3.148403] hid-generic 0003:31B2:0020.0004: Rust input,hidraw3: USB HID v1.11 Device [Hifi 384Khz Type-C Audio Audio fs 1.0] on usb-0000:04:00.3-3.1/input3
+[    6.509025] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[    6.509029] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[    6.509039] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[    6.509040] [INFO] [RUST] PCI device stored, registering platform driver...
+[    6.509064] [INFO] [RUST] Platform driver registered successfully
+[    6.509107] [INFO] [RUST] probe_rust() called
+[    6.509109] [INFO] [RUST] Got platform device
+[    6.509111] [INFO] [RUST] Allocated sp5100_tco structure
+[    6.509113] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[    6.509114] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[    6.509116] [INFO] [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[    6.509118] [INFO] [RUST] Setting up watchdog device
+[    6.509119] [INFO] [RUST] sp5100_tco_setupdevice() called
+[    6.509120] [DBG ] [RUST] Got tco structure from watchdog drvdata
+[    6.509121] [INFO] [RUST] Using non-MMIO setup path
+[    6.509138] [INFO] [RUST] Setup chipset: mmio=0x00000000 alt_mmio=0xfed80b00
+[    6.509139] [INFO] [RUST] Preparing watchdog base
+[    6.509158] [INFO] [RUST] Base prepared successfully, enabling timer
+[    6.509171] [INFO] [RUST] Timer enable sequence completed
+[    6.509175] [INFO] [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[    6.509176] [INFO] [RUST]   DISABLED bit (bit 3) = 0
+[    6.509177] [INFO] [RUST]   FIRED bit (bit 1) = 0
+[    6.509179] [INFO] [RUST]   START_STOP bit (bit 0) = 0
+[    6.509180] [INFO] [RUST] Setting watchdog action to: POWEROFF
+[    6.509183] [INFO] [RUST] Control register after action config: 0x00000000
+[    6.509184] [INFO] [RUST] Setting timeout to 60 sec and stopping timer
+[    6.509191] [INFO] [RUST] Timer initialization complete
+[    6.509193] [INFO] [RUST] sp5100_tco_timer_init succeeded
+[    6.509195] [INFO] [RUST] Non-MMIO setup complete, returning ret=0
+[    6.509196] [INFO] [RUST] Registering watchdog device
+[    6.509342] [INFO] [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[    6.509365] [INFO] [RUST] Platform device registered successfully
+[  277.058665] [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+[  709.553093] hid-generic 0003:093A:2510.0005: Rust input,hidraw0: USB HID v1.11 Mouse [PixArt USB Optical Mouse] on usb-0000:04:00.3-1/input0

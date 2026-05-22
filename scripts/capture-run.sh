@@ -160,6 +160,27 @@ echo "  wrote tests.log"
 # ---------------------------------------------------------------------------
 # 4. Post-run snapshots.
 # ---------------------------------------------------------------------------
+
+# Lab mode reboots the target via the watchdog; deploy.sh returns with a
+# broken-pipe error and the target is mid-reboot.  Wait for SSH to come back
+# before the post-snapshot, otherwise dmesg-post.log just captures SSH errors
+# and dmesg-delta.log becomes meaningless.
+if [ -n "$LAB_MODULE" ]; then
+    echo "Lab mode: waiting for $TARGET to reboot back…"
+    deadline=$(( $(date +%s) + 180 ))
+    while ! ssh -o ConnectTimeout=3 -o BatchMode=yes "$TARGET" 'true' 2>/dev/null; do
+        if [ "$(date +%s)" -gt "$deadline" ]; then
+            echo "  WARNING: $TARGET did not come back within 180s; post-snapshot will be incomplete." >&2
+            break
+        fi
+        sleep 5
+    done
+    if ssh -o ConnectTimeout=3 -o BatchMode=yes "$TARGET" 'true' 2>/dev/null; then
+        echo "  $TARGET back online"
+        sleep 5   # let udev/journald settle so post dmesg includes early boot
+    fi
+fi
+
 capture_dmesg "$RUN_DIR/dmesg-post.log"
 echo "  wrote dmesg-post.log ($(wc -l <"$RUN_DIR/dmesg-post.log") lines)"
 

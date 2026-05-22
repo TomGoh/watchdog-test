@@ -4,14 +4,14 @@
 #   ./scripts/capture-run.sh 'N80'
 #
 captured-by: ./scripts/capture-run.sh
-captured-at: 2026-05-20T13:54:00+08:00
+captured-at: 2026-05-22T16:37:13+08:00
 target:      N80
 kind:        autonomous
 
 --- ssh N80 'uname -a; uptime' ---
 Kylin V11
-Linux kylin 6.6.103+ #1 SMP Wed May 20 11:28:13 CST 2026 aarch64 aarch64 aarch64 GNU/Linux
- 13:54:01 up 0 min,  2 users,  load average: 2.79, 0.79, 0.27
+Linux kylin 6.6.103-GC-20260522-1506 #2 SMP Fri May 22 16:03:59 CST 2026 aarch64 aarch64 aarch64 GNU/Linux
+ 16:37:13 up 2 min,  2 users,  load average: 0.66, 0.69, 0.29
 
 --- pre-run lsmod (watchdog-related) ---
 Kylin V11

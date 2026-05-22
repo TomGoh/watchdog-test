@@ -46,7 +46,7 @@ creates a fresh directory.
 
 ## How to read a run
 
-If you're investigating "what happened on `N80`'s 2026-05-16
+If you're investigating "what happened on `N80`'s 2026-05-22
 autonomous run", open the directory and look in this order:
 
 1. `meta.txt` first — confirm the run targeted the box you think
@@ -67,6 +67,31 @@ autonomous run", open the directory and look in this order:
    loaded intentionally (see the script's "Note: leaving these
    modules loaded" output).
 
+### Reading a `lab-*` run
+
+`lab-*` directories are *destructive* — the watchdog actually fires and
+reboots the target.  This changes what success looks like compared with
+an `autonomous` run:
+
+- `tests.log` ends with `client_loop: send disconnect: Broken pipe` /
+  `FAILED: lab_dangerous-… (exit 255)`.  **That's the expected
+  signature of a successful lab run** — the SSH connection died because
+  the box was rebooted by the watchdog.  Only `lab_01_no_ping_reboot`
+  runs to completion; `lab_02` / `lab_03` never get a chance because
+  `cargo test` serializes within one binary and the host was already
+  resetting.
+- `dmesg-delta.log` is much shorter than an autonomous run's (typically
+  ~40–60 lines) — it captures the `arming watchdog`, `WCS_EN written`,
+  and (on the boxes that print one) the imminent-reset banner, then
+  cuts off mid-record when the reset hits.
+- `meta-post.txt` reflects the *fresh boot* — uptime is seconds, no
+  lab module loaded (capture-run waits for the box to come back via
+  `until ssh … 'true'` before sampling).
+- `dmesg-post.log` shows kernel messages from the *new* boot, not a
+  continuation of the pre-run dmesg.  Useful for "did the reboot bring
+  back a clean kernel?" but not for "what did the lab test print
+  before the reset?" — that lives in `dmesg-delta.log`.
+
 ## Reproducing a run
 
 The directory name encodes the exact invocation:
@@ -81,14 +106,27 @@ The directory name encodes the exact invocation:
 
 Arch is autodetected from the target (`uname -m` over SSH).
 
-## On the gitignored run-dirs
+## Committed baselines
 
-`.gitignore` excludes `logs/[0-9][0-9][0-9][0-9]-*/` so transient
-debugging runs don't accumulate in the repo.  One baseline run
-(`2026-05-16-N80-autonomous-0920/`) is committed via an exception
-rule, as a reference for "what does a clean passing run look like
-on a healthy kernel".
+`.gitignore` excludes `logs/[0-9][0-9][0-9][0-9]-*/` by default so
+transient debugging runs don't accumulate in the repo.  A small set
+of baseline runs is committed via `!logs/<dir>/` exception rules in
+`.gitignore`, as a reference for "what does a clean passing run look
+like on a healthy kernel" and "what does a successful destructive lab
+run look like".
 
-If a particular run is interesting enough to share, attach the
-relevant files to a GitHub issue rather than committing the whole
-directory.
+Current canonical set (2026-05-22), produced against the kernel that
+includes the `softdog` / `sbsa_gwdt` / `sp5100_tco` Rust ports:
+
+| Run dir | Type | Identities exercised | Notes |
+|---|---|---|---|
+| `2026-05-22-N80-autonomous-1637/` | autonomous | SBSA Generic Watchdog, Software Watchdog (Rust) | 60/60 pass, gc_03 SKIP by consent gate |
+| `2026-05-22-Hygon-autonomous-1637/` | autonomous | SP5100 TCO timer, Software Watchdog (Rust) | 60/60 pass, gc_03 SKIP by consent gate |
+| `2026-05-22-N80-lab-sbsa_gwdt_rust-1648/` | lab | SBSA Generic Watchdog | `lab_01_no_ping_reboot` fired SBSA WS0→WS1 hardware reset; SSH dropped, box came back on same kernel |
+| `2026-05-22-Hygon-lab-sp5100_tco_rust-1652/` | lab | SP5100 TCO timer | `lab_01_no_ping_reboot` fired SP5100 hardware reset |
+| `2026-05-22-N80-lab-softdog_rust-1653/` | lab | Software Watchdog (Rust) | `lab_01_no_ping_reboot` fired softdog `emergency_restart` |
+| `2026-05-22-Hygon-lab-softdog_rust-1653/` | lab | Software Watchdog (Rust) | same, on x86_64 — confirms the deploy.sh resolver fix that landed today correctly targets softdog (`watchdog1`) when sp5100 is already loaded as `watchdog0` |
+
+If a debugging run is interesting enough to share but isn't a new
+baseline, attach the relevant files to a GitHub issue rather than
+committing the whole directory.

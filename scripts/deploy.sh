@@ -182,17 +182,24 @@ EOF
         if [ \"\$n\" -eq 0 ]; then
             # Module was already loaded before us — fall back to
             # /sys/class/watchdog/*/device/driver symlink match for
-            # drivers that bind to a platform device.
+            # drivers that bind to a platform device.  Normalize by
+            # stripping _ and - from both sides so '<mod>_rust' (module)
+            # matches '<mod>-tco' or '<mod>-gwdt' (driver name in
+            # /sys/bus/platform/drivers/).
+            mod=\$(echo '$LAB_MODULE' | tr '-' '_')
+            mod_norm=\$(echo \"\$mod\"        | tr -d '_-')
+            mod_stripped_norm=\$(echo \"\${mod%_rust}\" | tr -d '_-')
+            mod_stripped2_norm=\$(echo \"\${mod%_drv}\"  | tr -d '_-')
             for d in /sys/class/watchdog/watchdog*; do
                 [ -e \"\$d/device/driver\" ] || continue
                 drv=\$(basename \$(readlink -f \"\$d/device/driver\"))
-                mod=\$(echo '$LAB_MODULE' | tr '-' '_')
-                case \"\$drv\" in
-                    \"\$mod\"|\"\${mod%_drv}\"|\"\${mod}_drv\"|\"\${mod%_rust}\"|\"\${mod}_rust\")
-                        cat \"\$d/identity\"
-                        exit 0
-                        ;;
-                esac
+                drv_norm=\$(echo \"\$drv\" | tr -d '_-')
+                if [ \"\$drv_norm\" = \"\$mod_norm\" ] \\
+                    || [ \"\$drv_norm\" = \"\$mod_stripped_norm\" ] \\
+                    || [ \"\$drv_norm\" = \"\$mod_stripped2_norm\" ]; then
+                    cat \"\$d/identity\"
+                    exit 0
+                fi
             done
             exit 12
         fi

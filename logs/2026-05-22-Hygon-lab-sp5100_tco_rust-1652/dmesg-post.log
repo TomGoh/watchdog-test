@@ -1,0 +1,38 @@
+[    0.088565] Memory: 16071864K/16633920K available (24576K kernel code, 6009K rwdata, 15756K rodata, 4552K init, 5648K bss, 561800K reserved, 0K cma-reserved)
+[    0.259547] NMI watchdog: Enabled. Permanently consumes one hw-PMU counter.
+[    0.374018] Initialise system trusted keyrings
+[    1.485718] hid-generic 0003:093A:2510.0001: Rust input,hidraw0: USB HID v1.11 Mouse [PixArt USB Optical Mouse] on usb-0000:04:00.3-1/input0
+[    2.952485] hid-generic 0003:31B2:0020.0002: Rust input,hidraw1: USB HID v1.11 Device [Hifi 384Khz Type-C Audio Audio fs 1.0] on usb-0000:04:00.3-3.1/input3
+[    7.081712] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[    7.081716] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[    7.081728] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[    7.081730] [INFO] [RUST] PCI device stored, registering platform driver...
+[    7.081764] [INFO] [RUST] Platform driver registered successfully
+[    7.081805] [INFO] [RUST] probe_rust() called
+[    7.081807] [INFO] [RUST] Got platform device
+[    7.081808] [INFO] [RUST] Allocated sp5100_tco structure
+[    7.081810] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[    7.081812] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[    7.081814] [INFO] [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[    7.081815] [INFO] [RUST] Setting up watchdog device
+[    7.081816] [INFO] [RUST] sp5100_tco_setupdevice() called
+[    7.081817] [DBG ] [RUST] Got tco structure from watchdog drvdata
+[    7.081818] [INFO] [RUST] Using non-MMIO setup path
+[    7.081835] [INFO] [RUST] Setup chipset: mmio=0x00000000 alt_mmio=0xfed80b00
+[    7.081836] [INFO] [RUST] Preparing watchdog base
+[    7.081851] [INFO] [RUST] Base prepared successfully, enabling timer
+[    7.081865] [INFO] [RUST] Timer enable sequence completed
+[    7.081868] [INFO] [RUST] sp5100_tco_timer_init: Control register = 0x00000002
+[    7.081869] [INFO] [RUST]   DISABLED bit (bit 3) = 0
+[    7.081870] [INFO] [RUST]   FIRED bit (bit 1) = 1
+[    7.081871] [INFO] [RUST]   START_STOP bit (bit 0) = 0
+[    7.081872] [INFO] [RUST] Watchdog FIRED bit is set, setting bootstatus=WDIOF_CARDRESET
+[    7.081873] [INFO] [RUST] Setting watchdog action to: POWEROFF
+[    7.081876] [INFO] [RUST] Control register after action config: 0x00000002
+[    7.081877] [INFO] [RUST] Setting timeout to 60 sec and stopping timer
+[    7.081883] [INFO] [RUST] Timer initialization complete
+[    7.081884] [INFO] [RUST] sp5100_tco_timer_init succeeded
+[    7.081886] [INFO] [RUST] Non-MMIO setup complete, returning ret=0
+[    7.081887] [INFO] [RUST] Registering watchdog device
+[    7.082037] [INFO] [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[    7.082051] [INFO] [RUST] Platform device registered successfully

@@ -1,13 +1,11 @@
 --- post-run lsmod (watchdog-related) ---
 Kylin V11
-softdog_rust           12288  0
 
 --- post-run /sys/class/watchdog inventory ---
 Kylin V11
-/sys/class/watchdog/watchdog1
-  identity     = Software Watchdog (Rust)
+/sys/class/watchdog/watchdog0
+  identity     = SP5100 TCO timer
   timeout      = 60
-  pretimeout   = 0
   state        = inactive
   nowayout     = 0
-  bootstatus   = 0
+  bootstatus   = 32

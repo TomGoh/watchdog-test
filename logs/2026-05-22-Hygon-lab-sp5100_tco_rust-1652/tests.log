@@ -1,0 +1,33 @@
+==========================================
+Run kind:    lab-sp5100_tco_rust
+Started:     2026-05-22T16:52:08+08:00
+Target:      Hygon
+==========================================
+
+Resolving target arch via SSH …
+Kylin V11
+  target arch = x86_64 → x86_64-unknown-linux-musl
+
+================================================================================
+  ATTENTION — LAB MODE will load sp5100_tco-rust on Hygon and run the
+  destructive lab tier against its watchdog.  Tests in this tier may
+  REBOOT the machine when the watchdog fires correctly.
+  Press Ctrl-C in the next 5 seconds to abort.
+================================================================================
+
+Kylin V11
+Loading kernel module sp5100_tco-rust …
+  module sp5100_tco-rust → identity "SP5100 TCO timer"
+Pushing 1 binaries to Hygon:/tmp/watchdog-test …
+Kylin V11
+----- lab_dangerous-22471958a4ccf030 (identity=SP5100 TCO timer) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 3 tests
+test lab_01_no_ping_reboot ... # watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# arming watchdog with timeout=5s; expecting reset within ~10s
+client_loop: send disconnect: Broken pipe
+FAILED: lab_dangerous-22471958a4ccf030 (exit 255)
+
+Finished:    2026-05-22T16:53:20+08:00

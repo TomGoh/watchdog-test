@@ -1,0 +1,33 @@
+==========================================
+Run kind:    lab-sbsa_gwdt_rust
+Started:     2026-05-22T16:48:47+08:00
+Target:      N80
+==========================================
+
+Resolving target arch via SSH …
+Kylin V11
+  target arch = aarch64 → aarch64-unknown-linux-musl
+
+================================================================================
+  ATTENTION — LAB MODE will load sbsa_gwdt-rust on N80 and run the
+  destructive lab tier against its watchdog.  Tests in this tier may
+  REBOOT the machine when the watchdog fires correctly.
+  Press Ctrl-C in the next 5 seconds to abort.
+================================================================================
+
+Kylin V11
+Loading kernel module sbsa_gwdt-rust …
+  module sbsa_gwdt-rust → identity "SBSA Generic Watchdog"
+Pushing 1 binaries to N80:/tmp/watchdog-test …
+Kylin V11
+----- lab_dangerous-d8adcfce158468b2 (identity=SBSA Generic Watchdog) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 3 tests
+test lab_01_no_ping_reboot ... # watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+# arming watchdog with timeout=5s; expecting reset within ~10s
+client_loop: send disconnect: Broken pipe
+FAILED: lab_dangerous-d8adcfce158468b2 (exit 255)
+
+Finished:    2026-05-22T16:49:38+08:00

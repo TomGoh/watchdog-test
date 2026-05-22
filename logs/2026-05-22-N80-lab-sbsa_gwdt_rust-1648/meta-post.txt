@@ -1,0 +1,5 @@
+--- post-run lsmod (watchdog-related) ---
+Kylin V11
+
+--- post-run /sys/class/watchdog inventory ---
+Kylin V11

@@ -4,14 +4,14 @@
 #   ./scripts/capture-run.sh 'Hygon'
 #
 captured-by: ./scripts/capture-run.sh
-captured-at: 2026-05-20T14:16:18+08:00
+captured-at: 2026-05-22T16:37:14+08:00
 target:      Hygon
 kind:        autonomous
 
 --- ssh Hygon 'uname -a; uptime' ---
 Kylin V11
-Linux gc-pc 6.6.103-wdt_test #4 SMP PREEMPT_DYNAMIC Wed May 20 09:57:31 CST 2026 x86_64 x86_64 x86_64 GNU/Linux
- 14:16:18 up  4:05,  7 users,  load average: 0.04, 0.17, 0.24
+Linux gc-pc 6.6.103-GC-20260522-1417 #2 SMP PREEMPT_DYNAMIC Fri May 22 14:18:42 CST 2026 x86_64 x86_64 x86_64 GNU/Linux
+ 16:37:14 up  1:42,  2 users,  load average: 0.12, 0.03, 0.01
 
 --- pre-run lsmod (watchdog-related) ---
 Kylin V11

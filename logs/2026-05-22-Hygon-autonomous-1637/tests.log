@@ -1,41 +1,41 @@
 ==========================================
 Run kind:    autonomous
-Started:     2026-05-20T14:16:25+08:00
-Target:      N80
+Started:     2026-05-22T16:37:14+08:00
+Target:      Hygon
 ==========================================
 
 Resolving target arch via SSH …
 Kylin V11
-  target arch = aarch64 → aarch64-unknown-linux-musl
+  target arch = x86_64 → x86_64-unknown-linux-musl
 Enumerating pre-existing watchdogs …
 Kylin V11
-  before modprobe: Software Watchdog (Rust)
+  before modprobe: SP5100 TCO timer
 Kylin V11
-Loading our managed watchdog drivers (nowayout=0, arch=aarch64): sbsa_gwdt-rust softdog-rust
+Loading our managed watchdog drivers (nowayout=0, arch=x86_64): sp5100_tco-rust softdog-rust
 Kylin V11
-  modprobe sbsa_gwdt-rust nowayout=0
+  modprobe sp5100_tco-rust nowayout=0
 Kylin V11
   modprobe softdog-rust nowayout=0
 Re-enumerating /sys/class/watchdog after bulk modprobe …
 Kylin V11
   testing 2 watchdog(s):
-    - "SBSA Generic Watchdog" (known: full per-driver suite)
+    - "SP5100 TCO timer" (known: full per-driver suite)
     - "Software Watchdog (Rust)" (known: full per-driver suite)
-Pushing 6 binaries to N80:/tmp/watchdog-test …
+Pushing 6 binaries to Hygon:/tmp/watchdog-test …
 Kylin V11
 Kylin V11
 Kylin V11
 Kylin V11
 
 ============================================================
-Testing identity: "SBSA Generic Watchdog"
+Testing identity: "SP5100 TCO timer"
 ============================================================
------ common_conformance-55a4900b3c8693c9 (identity=SBSA Generic Watchdog) -----
+----- common_conformance-b2a39b2974570286 (identity=SP5100 TCO timer) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
 running 10 tests
-test c01_sysfs_entry_exists ... # probe: watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+test c01_sysfs_entry_exists ... # probe: watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
 ok
 test c02_identity_consistent ... ok
 test c03_options_advertise_keepaliveping ... ok
@@ -45,17 +45,17 @@ test c06_magic_close_cycle ... ok
 test c07_set_timeout_round_trip ... ok
 test c08_set_timeout_zero_rejected ... ok
 test c09_timeleft_in_range ... ok
-test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] sbsa_gwdt: module init \xe2\x80\x94 registering platform driver
+test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
 ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.00s
 
------ common_extended-aaabc0d44818a28c (identity=SBSA Generic Watchdog) -----
+----- common_extended-dd8f258405b60d01 (identity=SP5100 TCO timer) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
 running 5 tests
-test c_ext_01_write_byte_ping ... # probe: watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+test c_ext_01_write_byte_ping ... # probe: watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
 ok
 test c_ext_02_concurrent_open_ebusy ... ok
 test c_ext_03_set_timeout_clamps_oversize ... ok
@@ -66,53 +66,54 @@ test c_ext_05_timeleft_progresses ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
 
 Kylin V11
------ sbsa_gwdt-e6ac78375c1f3237 (identity=SBSA Generic Watchdog) -----
+----- sp5100_tco-ca1b5df803d9faab (identity=SP5100 TCO timer) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
 running 12 tests
 test regex_lite_self_check::matches_init_log_pattern ... ok
-test sbsa_01_identity ... ok
-test sbsa_02_options_bitmap ... ok
-test sbsa_03_init_log_format ... ok
-test sbsa_04_clk_plausible ... ok
-test sbsa_ext_01_continuous_feed ... # feeding watchdog for 20s (timeout=10, ping every 5s)
-# survived 4 pings over 20s
+test sp5100_01_identity ... ok
+test sp5100_02_options_bitmap ... ok
+test sp5100_03_dmesg_init_log ... ok
+test sp5100_04_chipset_detected ... # detected SP5100 chipset layout = EFCH
 ok
-test sbsa_ext_02_write_byte_ping ... ok
-test sbsa_ext_03_settimeout_matrix ... ok
-test sbsa_ext_04_setoptions_disable_enable ... ok
-test sbsa_ext_05_close_without_v_keeps_running ... ok
-test sbsa_ext_06_dmesg_version_consistent ... # detected SBSA GWDT version = 0
+test sp5100_ext_01_continuous_feed ... # feeding watchdog for 120s (timeout=60, ping every 30s)
+# survived 4 pings over 120s
 ok
-test sbsa_ext_99_modprobe_cycle ... # rmmod sbsa_gwdt-rust
-# modprobe sbsa_gwdt-rust
+test sp5100_ext_02_write_byte_ping ... ok
+test sp5100_ext_03_settimeout_matrix ... ok
+test sp5100_ext_04_setoptions_disable_enable ... ok
+test sp5100_ext_05_close_without_v_keeps_running ... ok
+test sp5100_ext_06_dmesg_action_consistent ... # detected SP5100 action = POWEROFF
+ok
+test sp5100_ext_99_modprobe_cycle ... # rmmod sp5100_tco-rust
+# modprobe sp5100_tco-rust
 ok
 
-test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.59s
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.59s
 
------ gc_test-d3a8d8281c93d81e (identity=SBSA Generic Watchdog) -----
+----- gc_test-daf3c698d67d8e87 (identity=SP5100 TCO timer) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
 running 4 tests
-test gc_01_device_info ... # 测试设备：watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
-# sysfs 信息：identity="SBSA Generic Watchdog" timeout=10s nowayout=false state="inactive"
-# ioctl 信息：identity="SBSA Generic Watchdog" options=0x81a0 firmware_version=0
+test gc_01_device_info ... # 测试设备：watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# sysfs 信息：identity="SP5100 TCO timer" timeout=60s nowayout=false state="inactive"
+# ioctl 信息：identity="SP5100 TCO timer" options=0x8180 firmware_version=0
 # GC-01 通过：设备信息读取正常
 ok
-test gc_02_feed_within_timeout ... # 测试设备：watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+test gc_02_feed_within_timeout ... # 测试设备：watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
 # 阶段 1：SETTIMEOUT 多值往返测试
 #   SETTIMEOUT(5) → 5s ✓
 #   SETTIMEOUT(10) → 10s ✓
 #   SETTIMEOUT(30) → 30s ✓
-# 阶段 2：连续喂狗 20s（timeout=10s，每 5s ping 一次）
-# GC-02 通过：累计喂狗 4 次，20s 内系统存活 —— 喂狗机制正常
+# 阶段 2：连续喂狗 120s（timeout=60s，每 30s ping 一次）
+# GC-02 通过：累计喂狗 4 次，120s 内系统存活 —— 喂狗机制正常
 ok
 test gc_03_no_feed_reboot ... # SKIP: lab-CI test requires WATCHDOG_LAB_DANGEROUS=YES_REALLY (this test will REBOOT the machine on success)
 ok
-test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
-# 对内核模块 "sbsa_gwdt-rust"（identity="SBSA Generic Watchdog"）反复加载/卸载 10 次
+test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# 对内核模块 "sp5100_tco-rust"（identity="SP5100 TCO timer"）反复加载/卸载 10 次
 # 第  1/10 轮通过
 # 第  2/10 轮通过
 # 第  3/10 轮通过
@@ -126,13 +127,13 @@ test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog0 identity="SBSA Gene
 # GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
 ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.62s
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.63s
 
 
 ============================================================
 Testing identity: "Software Watchdog (Rust)"
 ============================================================
------ common_conformance-55a4900b3c8693c9 (identity=Software Watchdog (Rust)) -----
+----- common_conformance-b2a39b2974570286 (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -152,7 +153,7 @@ ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.00s
 
------ common_extended-aaabc0d44818a28c (identity=Software Watchdog (Rust)) -----
+----- common_extended-dd8f258405b60d01 (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -168,7 +169,7 @@ test c_ext_05_timeleft_progresses ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
 
 Kylin V11
------ softdog-01f76c1b8107e62d (identity=Software Watchdog (Rust)) -----
+----- softdog-bcda17cdea9d0eb3 (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -190,9 +191,9 @@ test softdog_ext_99_modprobe_cycle ... # rmmod softdog-rust
 # modprobe softdog-rust
 ok
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.57s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.59s
 
------ gc_test-d3a8d8281c93d81e (identity=Software Watchdog (Rust)) -----
+----- gc_test-daf3c698d67d8e87 (identity=Software Watchdog (Rust)) -----
 Pseudo-terminal will not be allocated because stdin is not a terminal.
 Kylin V11
 
@@ -227,14 +228,14 @@ test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog1 identity="Software 
 # GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
 ok
 
-test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.58s
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.61s
 
 
 Kylin V11
 Cleanup: rmmod modules loaded by this run:
 Kylin V11
-  rmmod sbsa_gwdt_rust
+  rmmod softdog_rust
 
 Done.
 
-Finished:    2026-05-20T14:21:23+08:00
+Finished:    2026-05-22T16:45:32+08:00
