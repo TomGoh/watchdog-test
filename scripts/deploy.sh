@@ -156,36 +156,59 @@ if [ -n "$LAB_MODULE" ]; then
 EOF
     sleep 5
 
-    echo "Loading kernel module $LAB_MODULE …"
-    ssh "$TARGET" "sudo modprobe $LAB_MODULE" || {
-        echo "modprobe $LAB_MODULE failed; aborting." >&2
+    # Discover identity by diffing /sys/class/watchdog/* across the
+    # modprobe.  Robust to drivers that have no /device/driver symlink
+    # (e.g. softdog, which is a pure misc-device driver), and to hosts
+    # where the platform watchdog (sp5100_tco/iTCO/sbsa_gwdt) is
+    # already auto-probed at boot — without this diff, the resolver
+    # would mis-target the pre-existing platform watchdog.
+    LAB_IDENTITY="$(ssh "$TARGET" "
+        pre=\$(mktemp)
+        post=\$(mktemp)
+        trap 'rm -f \$pre \$post' EXIT
+        ls -1 /sys/class/watchdog/ 2>/dev/null | sort -u >\$pre
+        echo 'Loading kernel module $LAB_MODULE …' >&2
+        sudo modprobe $LAB_MODULE || exit 11
+        sleep 1
+        ls -1 /sys/class/watchdog/ 2>/dev/null | sort -u >\$post
+        new=\$(comm -13 \$pre \$post)
+        n=\$(printf '%s\n' \"\$new\" | grep -c '^watchdog' || true)
+
+        if [ \"\$n\" -eq 1 ]; then
+            cat \"/sys/class/watchdog/\$new/identity\"
+            exit 0
+        fi
+
+        if [ \"\$n\" -eq 0 ]; then
+            # Module was already loaded before us — fall back to
+            # /sys/class/watchdog/*/device/driver symlink match for
+            # drivers that bind to a platform device.
+            for d in /sys/class/watchdog/watchdog*; do
+                [ -e \"\$d/device/driver\" ] || continue
+                drv=\$(basename \$(readlink -f \"\$d/device/driver\"))
+                mod=\$(echo '$LAB_MODULE' | tr '-' '_')
+                case \"\$drv\" in
+                    \"\$mod\"|\"\${mod%_drv}\"|\"\${mod}_drv\"|\"\${mod%_rust}\"|\"\${mod}_rust\")
+                        cat \"\$d/identity\"
+                        exit 0
+                        ;;
+                esac
+            done
+            exit 12
+        fi
+
+        echo \"\$new\" >&2
+        exit 13
+    ")" || {
+        rc=$?
+        case $rc in
+            11) echo "modprobe $LAB_MODULE failed; aborting." >&2 ;;
+            12) echo "$LAB_MODULE was already loaded and no /device/driver symlink matched; rmmod the conflicting driver first or use the autonomous path." >&2 ;;
+            13) echo "modprobe $LAB_MODULE produced multiple new watchdogs; cannot disambiguate. rmmod conflicting drivers first." >&2 ;;
+            *)  echo "Could not discover identity for module $LAB_MODULE (rc=$rc)" >&2 ;;
+        esac
         exit 1
     }
-    sleep 1
-
-    # Discover the identity that $LAB_MODULE registered.  Walk
-    # /sys/class/watchdog/*/device/driver symlinks; whichever resolves
-    # to a directory whose basename matches the module name (with
-    # underscores allowed in place of dashes) is the one.
-    LAB_IDENTITY="$(ssh "$TARGET" "
-        for d in /sys/class/watchdog/watchdog*; do
-            [ -e \"\$d/device/driver\" ] || continue
-            drv=\$(basename \$(readlink -f \"\$d/device/driver\"))
-            mod=\$(echo '$LAB_MODULE' | tr '-' '_')
-            case \"\$drv\" in
-                \"\$mod\"|\"\${mod%_drv}\"|\"\${mod}_drv\")
-                    cat \"\$d/identity\"
-                    exit 0
-                    ;;
-            esac
-        done
-        # Fallback: if there's only one watchdog, use it.
-        for d in /sys/class/watchdog/watchdog*; do
-            cat \"\$d/identity\"
-            exit 0
-        done
-    ")"
-
     if [ -z "$LAB_IDENTITY" ]; then
         echo "Could not discover identity for module $LAB_MODULE" >&2
         exit 1
