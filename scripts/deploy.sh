@@ -7,7 +7,7 @@
 #
 # Usage:
 #   ./scripts/deploy.sh <TARGET>                  # autonomous, reboot-safe
-#   ./scripts/deploy.sh <TARGET> --lab <module>   # destructive, single named module
+#   ./scripts/deploy.sh <TARGET> --lab <module>   # lab validation, single named module
 #
 # The autonomous path:
 #   1. Resolve target arch via `ssh $TARGET uname -m`.
@@ -123,7 +123,7 @@ push_binaries() {
     done
 }
 
-# Run a single binary on the target.  $1=binary basename, $2=identity,
+# Run all tests in a single binary on the target.  $1=binary basename, $2=identity,
 # $3=extra env (string like 'WATCHDOG_LAB_DANGEROUS=YES_REALLY')
 run_binary() {
     local bin="$1" identity="$2" extra_env="${3:-}"
@@ -131,6 +131,38 @@ run_binary() {
     ssh -t "$TARGET" \
         "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }sudo -E $REMOTE_DIR/$bin --test-threads=1 --nocapture --include-ignored" \
         || echo "FAILED: $bin (exit $?)"
+}
+
+# Run one exact test in a single binary.  Keep lab mode deterministic:
+# libtest/serial_test prevents concurrency, but does not give us the
+# ordering we need when one test intentionally reboots the target.
+run_binary_test() {
+    local bin="$1" identity="$2" test_name="$3" extra_env="${4:-}"
+    echo "----- $bin::$test_name (identity=$identity) -----"
+    ssh -t "$TARGET" \
+        "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }sudo -E $REMOTE_DIR/$bin '$test_name' --exact --test-threads=1 --nocapture --include-ignored"
+}
+
+# LAB-01 succeeds by rebooting the target, so the SSH client normally exits
+# with 255 after "Broken pipe".  Treat that disconnect as the expected result
+# and leave post-reboot evidence collection to capture-run.sh.
+run_reboot_expected_test() {
+    local bin="$1" identity="$2" test_name="$3"
+    echo "----- $bin::$test_name (identity=$identity, reboot expected) -----"
+    set +e
+    ssh -t "$TARGET" \
+        "WATCHDOG_TEST_IDENTITY='$identity' WATCHDOG_LAB_DANGEROUS=YES_REALLY sudo -E $REMOTE_DIR/$bin '$test_name' --exact --test-threads=1 --nocapture --include-ignored"
+    local rc=$?
+    set -e
+    if [ "$rc" -eq 255 ]; then
+        echo "EXPECTED-REBOOT: $bin::$test_name disconnected SSH (exit 255)"
+    elif [ "$rc" -eq 0 ]; then
+        echo "FAILED: $bin::$test_name returned normally; expected the target to reboot." >&2
+        return 1
+    else
+        echo "FAILED: $bin::$test_name (exit $rc)" >&2
+        return "$rc"
+    fi
 }
 
 # Find the binary on the target whose filename starts with `<base>-`.
@@ -147,9 +179,10 @@ if [ -n "$LAB_MODULE" ]; then
     cat <<EOF
 
 ================================================================================
-  ATTENTION — LAB MODE will load $LAB_MODULE on $TARGET and run the
-  destructive lab tier against its watchdog.  Tests in this tier may
-  REBOOT the machine when the watchdog fires correctly.
+  ATTENTION — LAB MODE will load $LAB_MODULE on $TARGET and run lab checks
+  against its watchdog.  It runs the non-rebooting Magic-V check first, then
+  the no-ping reboot check.  The final check may REBOOT the machine when the
+  watchdog fires correctly.
   Press Ctrl-C in the next 5 seconds to abort.
 ================================================================================
 
@@ -225,7 +258,11 @@ EOF
     push_binaries '^lab_dangerous-'
 
     for b in "${BINS[@]}"; do
-        run_binary "$b" "$LAB_IDENTITY" "WATCHDOG_LAB_DANGEROUS=YES_REALLY"
+        if ! run_binary_test "$b" "$LAB_IDENTITY" "lab_02_magic_v_disarms" "WATCHDOG_LAB_DANGEROUS=YES_REALLY"; then
+            echo "FAILED: $b::lab_02_magic_v_disarms; not running reboot test." >&2
+            exit 1
+        fi
+        run_reboot_expected_test "$b" "$LAB_IDENTITY" "lab_01_no_ping_reboot"
     done
     exit 0
 fi
