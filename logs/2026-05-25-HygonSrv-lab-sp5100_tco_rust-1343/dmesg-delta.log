@@ -1,0 +1,62 @@
+[    0.000000] Linux version 6.6.121-sp5100-nowayout-rust (KYLINSOFT@ubuntu) (x86_64-linux-gnu-gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #2 SMP PREEMPT_DYNAMIC Mon May 25 11:25:19 CST 2026
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.6.121-sp5100-nowayout-rust root=/dev/mapper/klas-root ro resume=/dev/mapper/klas-swap rd.lvm.lv=klas/root rd.lvm.lv=klas/swap cgroup_disable=files apparmor=0 crashkernel=512M audit=0 rhgb quiet console=ttyS0,115200n8 kvm_amd.sev=1 mem_encrypt=on
+[    0.071585] Kernel command line: BOOT_IMAGE=/vmlinuz-6.6.121-sp5100-nowayout-rust root=/dev/mapper/klas-root ro resume=/dev/mapper/klas-swap rd.lvm.lv=klas/root rd.lvm.lv=klas/swap cgroup_disable=files apparmor=0 crashkernel=512M audit=0 rhgb quiet console=ttyS0,115200n8 kvm_amd.sev=1 mem_encrypt=on
+[    0.117836] Memory: 1295612K/133776352K available (18432K kernel code, 5834K rwdata, 14252K rodata, 4164K init, 5060K bss, 3041900K reserved, 0K cma-reserved)
+[    0.331369] NMI watchdog: Enabled. Permanently consumes one hw-PMU counter.
+[    1.359279] Initialise system trusted keyrings
+[    2.226563] usb usb1: Manufacturer: Linux 6.6.121-sp5100-nowayout-rust xhci-hcd
+[    2.226852] usb usb2: Manufacturer: Linux 6.6.121-sp5100-nowayout-rust xhci-hcd
+[    2.227842] usb usb3: Manufacturer: Linux 6.6.121-sp5100-nowayout-rust xhci-hcd
+[    2.228082] usb usb4: Manufacturer: Linux 6.6.121-sp5100-nowayout-rust xhci-hcd
+[    2.493314] [DBG ] Rust: hid_init done
+[    2.493377] Rust_hid_driver_name: hid-generic
+[    2.493381] Rust_hid_driver_name: hid-generic
+[    2.721478] Rust_hid_driver_name: corsair-cpro
+[    2.721483] Rust_hid_driver_name: corsair-cpro
+[    3.193228] Rust_hid_device_name: 
+[    3.193237] Rust_hid_device_name: 
+[    3.194306] [DBG ] Rust: hid_device_probe start
+[    3.194313] [DBG ] Rust: hid_generic_match_rust
+[    3.194360] [DBG ] Rust: hid_generic_probe_rust
+[    3.325285] hid-generic 0003:1D6B:0104.0001: Rust input,hidraw0: USB HID v1.01 Keyboard [OpenBMC virtual_input] on usb-0000:03:00.3-4.1/input0
+[    3.325293] [DBG ] Rust: hid_device_probe done
+[    3.325602] Rust_hid_device_name: 
+[    3.325607] Rust_hid_device_name: 
+[    3.326667] [DBG ] Rust: hid_device_probe start
+[    3.326671] [DBG ] Rust: hid_generic_match_rust
+[    3.326718] [DBG ] Rust: hid_generic_probe_rust
+[    3.329290] hid-generic 0003:1D6B:0104.0002: Rust input,hidraw1: USB HID v1.01 Mouse [OpenBMC virtual_input] on usb-0000:03:00.3-4.1/input1
+[    3.329296] [DBG ] Rust: hid_device_probe done
+[    3.646689] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[    3.646702] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[    3.646723] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[    3.646726] [INFO] [RUST] PCI device stored, registering platform driver...
+[    3.647729] [INFO] [RUST] Platform driver registered successfully
+[    3.648421] [INFO] [RUST] probe_rust() called
+[    3.648427] [INFO] [RUST] Got platform device
+[    3.648432] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[    3.648438] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[    3.648441] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[    3.648444] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[    3.648447] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[    3.648449] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[    3.648451] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[    3.648473] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0x00000000 alt_mmio=0xfed80b00
+[    3.648474] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[    3.648537] sp5100-tco sp5100-tco: MMIO address 0xfed80b00 mapped at 0xffffc900043b9b00
+[    3.648538] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[    3.648552] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[    3.648556] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000002
+[    3.648557] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[    3.648559] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 1
+[    3.648560] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[    3.648561] sp5100-tco sp5100-tco: [RUST] Watchdog FIRED bit is set, setting bootstatus=WDIOF_CARDRESET
+[    3.648564] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[    3.648567] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000002
+[    3.648569] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[    3.648576] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[    3.648577] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[    3.648580] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[    3.648581] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[    3.650846] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[    3.650870] [INFO] [RUST] Platform device registered successfully

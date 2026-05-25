@@ -1,0 +1,50 @@
+==========================================
+Run kind:    lab-sp5100_tco_rust
+Started:     2026-05-25T13:43:55+08:00
+Target:      HygonSrv
+==========================================
+
+Resolving target arch via SSH …
+
+Authorized users only. All activities may be monitored and reported.
+  target arch = x86_64 → x86_64-unknown-linux-musl
+
+================================================================================
+  ATTENTION — LAB MODE will load sp5100_tco-rust on HygonSrv and run lab checks
+  against its watchdog.  It runs the non-rebooting Magic-V check first, then
+  the no-ping reboot check.  The final check may REBOOT the machine when the
+  watchdog fires correctly.
+  Press Ctrl-C in the next 5 seconds to abort.
+================================================================================
+
+
+Authorized users only. All activities may be monitored and reported.
+Loading kernel module sp5100_tco-rust …
+  module sp5100_tco-rust → identity "SP5100 TCO timer"
+Pushing 1 binaries to HygonSrv:/tmp/watchdog-test …
+
+Authorized users only. All activities may be monitored and reported.
+----- lab_dangerous-4799d4abc9b8cd14::lab_02_magic_v_disarms (identity=SP5100 TCO timer) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+
+Authorized users only. All activities may be monitored and reported.
+
+running 1 test
+test lab_02_magic_v_disarms ... # watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# slept 10s past 5s timeout; system survived → magic-V works
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 10.00s
+
+----- lab_dangerous-4799d4abc9b8cd14::lab_01_no_ping_reboot (identity=SP5100 TCO timer, reboot expected) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+
+Authorized users only. All activities may be monitored and reported.
+
+running 1 test
+test lab_01_no_ping_reboot ... # watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(5)s nowayout=Some(false)
+# arming watchdog with timeout=5s; expecting reset within ~10s
+Connection to 10.44.73.249 closed by remote host.
+EXPECTED-REBOOT: lab_dangerous-4799d4abc9b8cd14::lab_01_no_ping_reboot disconnected SSH (exit 255)
+
+Finished:    2026-05-25T13:46:45+08:00

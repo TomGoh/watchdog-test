@@ -1,0 +1,30 @@
+# meta.txt — written by scripts/capture-run.sh
+#
+# Reproduce this run with:
+#   ./scripts/capture-run.sh 'HygonSrv'
+#
+captured-by: ./scripts/capture-run.sh
+captured-at: 2026-05-25T13:39:15+08:00
+target:      HygonSrv
+kind:        autonomous
+
+--- ssh HygonSrv 'uname -a; uptime' ---
+
+Authorized users only. All activities may be monitored and reported.
+Linux localhost.localdomain 6.6.121-sp5100-nowayout-rust #2 SMP PREEMPT_DYNAMIC Mon May 25 11:25:19 CST 2026 x86_64 x86_64 x86_64 GNU/Linux
+ 13:37:29 up 53 min,  2 users,  load average: 0.02, 0.02, 0.00
+
+--- pre-run lsmod (watchdog-related) ---
+
+Authorized users only. All activities may be monitored and reported.
+
+--- pre-run /sys/class/watchdog inventory ---
+
+Authorized users only. All activities may be monitored and reported.
+/sys/class/watchdog/watchdog0
+  identity     = SP5100 TCO timer
+  timeout      = 60
+  pretimeout   = 0
+  state        = inactive
+  nowayout     = 0
+  bootstatus   = 0

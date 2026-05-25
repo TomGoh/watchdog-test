@@ -1,0 +1,705 @@
+[  905.529636] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[  905.529644] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[  905.529665] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[  905.529666] [INFO] [RUST] PCI device stored, registering platform driver...
+[  905.529728] [INFO] [RUST] Platform driver registered successfully
+[  905.529791] [INFO] [RUST] probe_rust() called
+[  905.529792] [INFO] [RUST] Got platform device
+[  905.529795] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[  905.529798] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[  905.529800] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[  905.529802] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[  905.529804] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[  905.529805] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[  905.529806] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[  905.529822] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[  905.529823] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[  905.529873] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[  905.529874] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[  905.529888] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[  905.529890] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[  905.529892] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[  905.529893] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[  905.529894] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[  905.529896] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[  905.529898] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[  905.529899] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[  905.529906] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[  905.529907] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[  905.529908] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[  905.529909] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[  905.530055] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[  905.530070] [INFO] [RUST] Platform device registered successfully
+[ 1037.534591] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.534597] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.534617] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.534619] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.534657] [INFO] [RUST] Platform driver registered successfully
+[ 1037.534700] [INFO] [RUST] probe_rust() called
+[ 1037.534701] [INFO] [RUST] Got platform device
+[ 1037.534704] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.534707] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.534709] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.534711] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.534713] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.534714] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.534715] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.534731] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.534732] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.534780] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.534781] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.534795] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.534798] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.534799] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.534800] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.534801] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.534803] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.534805] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.534806] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.534813] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.534814] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.534815] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.534816] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.534942] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.534956] [INFO] [RUST] Platform device registered successfully
+[ 1037.573172] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.573175] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.573182] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.573183] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.573208] [INFO] [RUST] Platform driver registered successfully
+[ 1037.573237] [INFO] [RUST] probe_rust() called
+[ 1037.573238] [INFO] [RUST] Got platform device
+[ 1037.573239] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.573241] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.573242] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.573244] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.573245] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.573246] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.573247] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.573258] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.573259] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.573275] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.573276] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.573289] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.573292] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.573293] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.573294] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.573295] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.573296] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.573298] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.573299] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.573305] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.573306] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.573308] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.573309] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.573382] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.573392] [INFO] [RUST] Platform device registered successfully
+[ 1037.604516] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.604519] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.604524] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.604525] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.604544] [INFO] [RUST] Platform driver registered successfully
+[ 1037.604569] [INFO] [RUST] probe_rust() called
+[ 1037.604570] [INFO] [RUST] Got platform device
+[ 1037.604572] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.604574] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.604575] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.604576] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.604577] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.604578] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.604580] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.604590] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.604591] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.604600] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.604601] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.604615] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.604617] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.604618] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.604619] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.604620] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.604621] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.604623] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.604624] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.604631] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.604632] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.604633] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.604634] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.604703] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.604712] [INFO] [RUST] Platform device registered successfully
+[ 1037.638572] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.638575] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.638580] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.638581] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.638599] [INFO] [RUST] Platform driver registered successfully
+[ 1037.638623] [INFO] [RUST] probe_rust() called
+[ 1037.638624] [INFO] [RUST] Got platform device
+[ 1037.638625] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.638627] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.638628] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.638629] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.638630] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.638631] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.638632] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.638643] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.638644] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.638653] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.638654] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.638667] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.638670] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.638671] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.638672] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.638673] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.638674] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.638676] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.638677] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.638683] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.638684] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.638686] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.638686] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.638774] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.638784] [INFO] [RUST] Platform device registered successfully
+[ 1037.682369] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.682375] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.682393] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.682394] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.682439] [INFO] [RUST] Platform driver registered successfully
+[ 1037.682489] [INFO] [RUST] probe_rust() called
+[ 1037.682490] [INFO] [RUST] Got platform device
+[ 1037.682493] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.682497] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.682498] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.682500] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.682502] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.682503] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.682504] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.682519] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.682520] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.682563] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.682564] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.682578] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.682580] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.682581] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.682583] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.682584] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.682585] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.682587] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.682589] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.682595] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.682596] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.682597] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.682598] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.682745] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.682760] [INFO] [RUST] Platform device registered successfully
+[ 1037.716598] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.716602] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.716610] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.716611] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.716632] [INFO] [RUST] Platform driver registered successfully
+[ 1037.716659] [INFO] [RUST] probe_rust() called
+[ 1037.716660] [INFO] [RUST] Got platform device
+[ 1037.716662] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.716664] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.716665] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.716667] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.716668] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.716669] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.716671] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.716681] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.716682] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.716692] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.716693] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.716706] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.716709] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.716710] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.716711] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.716712] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.716713] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.716715] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.716716] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.716722] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.716723] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.716725] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.716726] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.716799] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.716809] [INFO] [RUST] Platform device registered successfully
+[ 1037.745840] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.745843] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.745848] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.745849] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.745868] [INFO] [RUST] Platform driver registered successfully
+[ 1037.745894] [INFO] [RUST] probe_rust() called
+[ 1037.745896] [INFO] [RUST] Got platform device
+[ 1037.745897] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.745900] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.745901] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.745903] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.745904] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.745906] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.745908] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.745919] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.745921] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.745935] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.745936] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.745950] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.745953] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.745955] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.745956] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.745958] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.745959] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.745962] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.745964] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.745971] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.745972] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.745974] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.745976] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.746071] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.746083] [INFO] [RUST] Platform device registered successfully
+[ 1037.785616] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.785622] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.785634] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.785636] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.785664] [INFO] [RUST] Platform driver registered successfully
+[ 1037.785700] [INFO] [RUST] probe_rust() called
+[ 1037.785701] [INFO] [RUST] Got platform device
+[ 1037.785703] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.785705] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.785706] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.785708] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.785710] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.785711] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.785712] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.785725] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.785726] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.785757] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.785758] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.785771] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.785774] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.785775] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.785776] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.785777] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.785778] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.785780] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.785781] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.785788] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.785789] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.785790] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.785791] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.785868] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.785879] [INFO] [RUST] Platform device registered successfully
+[ 1037.821799] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.821804] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.821817] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.821818] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.821847] [INFO] [RUST] Platform driver registered successfully
+[ 1037.821881] [INFO] [RUST] probe_rust() called
+[ 1037.821882] [INFO] [RUST] Got platform device
+[ 1037.821884] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.821886] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.821888] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.821889] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.821891] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.821892] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.821893] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.821905] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.821906] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.821939] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.821940] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.821954] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.821956] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.821957] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.821958] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.821959] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.821961] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.821963] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.821964] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.821970] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.821971] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.821973] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.821974] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.822051] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.822062] [INFO] [RUST] Platform device registered successfully
+[ 1037.858138] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 1037.858142] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 1037.858164] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 1037.858165] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 1037.858195] [INFO] [RUST] Platform driver registered successfully
+[ 1037.858230] [INFO] [RUST] probe_rust() called
+[ 1037.858232] [INFO] [RUST] Got platform device
+[ 1037.858234] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 1037.858236] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 1037.858237] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 1037.858239] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 1037.858241] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 1037.858242] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 1037.858243] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 1037.858254] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 1037.858255] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 1037.858289] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 1037.858290] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 1037.858303] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 1037.858305] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 1037.858306] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 1037.858307] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 1037.858308] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 1037.858309] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 1037.858311] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 1037.858312] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 1037.858319] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 1037.858320] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 1037.858321] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 1037.858322] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 1037.858387] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 1037.858397] [INFO] [RUST] Platform device registered successfully
+[ 3369.107990] watchdog: watchdog0: watchdog did not stop!
+[ 3370.651483] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3370.651492] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3370.651512] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3370.651514] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3370.651590] [INFO] [RUST] Platform driver registered successfully
+[ 3370.651666] [INFO] [RUST] probe_rust() called
+[ 3370.651668] [INFO] [RUST] Got platform device
+[ 3370.651673] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3370.651677] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3370.651680] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3370.651682] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3370.651687] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3370.651689] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3370.651691] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3370.651711] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3370.651713] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3370.651767] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3370.651768] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3370.651782] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3370.651785] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3370.651786] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3370.651787] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3370.651788] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3370.651790] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3370.651792] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3370.651793] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3370.651800] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3370.651801] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3370.651802] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3370.651803] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3370.651937] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3370.651955] [INFO] [RUST] Platform device registered successfully
+[ 3491.250361] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.250366] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.250386] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.250388] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.250422] [INFO] [RUST] Platform driver registered successfully
+[ 3491.250464] [INFO] [RUST] probe_rust() called
+[ 3491.250466] [INFO] [RUST] Got platform device
+[ 3491.250469] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.250472] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.250474] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.250476] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.250479] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.250480] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.250482] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.250499] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.250501] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.250546] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.250548] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.250562] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.250566] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.250567] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.250569] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.250570] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.250572] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.250575] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.250576] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.250583] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.250585] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.250587] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.250588] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.250735] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.250749] [INFO] [RUST] Platform device registered successfully
+[ 3491.313292] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.313297] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.313313] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.313314] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.313350] [INFO] [RUST] Platform driver registered successfully
+[ 3491.313387] [INFO] [RUST] probe_rust() called
+[ 3491.313388] [INFO] [RUST] Got platform device
+[ 3491.313390] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.313393] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.313394] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.313396] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.313397] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.313399] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.313400] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.313412] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.313413] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.313449] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.313451] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.313464] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.313466] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.313468] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.313469] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.313469] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.313471] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.313473] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.313474] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.313480] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.313481] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.313483] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.313484] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.313600] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.313613] [INFO] [RUST] Platform device registered successfully
+[ 3491.368668] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.368673] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.368690] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.368691] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.368747] [INFO] [RUST] Platform driver registered successfully
+[ 3491.368790] [INFO] [RUST] probe_rust() called
+[ 3491.368791] [INFO] [RUST] Got platform device
+[ 3491.368794] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.368796] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.368798] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.368799] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.368801] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.368803] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.368804] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.368819] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.368821] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.368865] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.368866] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.368880] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.368882] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.368884] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.368885] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.368886] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.368888] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.368890] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.368891] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.368897] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.368898] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.368899] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.368900] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.369085] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.369102] [INFO] [RUST] Platform device registered successfully
+[ 3491.422270] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.422273] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.422284] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.422285] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.422311] [INFO] [RUST] Platform driver registered successfully
+[ 3491.422343] [INFO] [RUST] probe_rust() called
+[ 3491.422344] [INFO] [RUST] Got platform device
+[ 3491.422346] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.422348] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.422349] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.422351] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.422352] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.422354] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.422355] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.422365] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.422366] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.422379] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.422381] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.422394] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.422396] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.422397] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.422398] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.422399] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.422400] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.422402] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.422403] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.422410] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.422411] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.422412] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.422413] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.422514] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.422526] [INFO] [RUST] Platform device registered successfully
+[ 3491.470819] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.470823] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.470829] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.470830] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.470853] [INFO] [RUST] Platform driver registered successfully
+[ 3491.470879] [INFO] [RUST] probe_rust() called
+[ 3491.470881] [INFO] [RUST] Got platform device
+[ 3491.470882] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.470884] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.470885] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.470886] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.470887] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.470889] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.470890] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.470900] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.470901] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.470913] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.470914] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.470927] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.470930] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.470931] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.470932] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.470933] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.470934] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.470936] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.470937] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.470944] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.470945] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.470946] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.470947] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.471086] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.471099] [INFO] [RUST] Platform device registered successfully
+[ 3491.520643] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.520647] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.520652] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.520653] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.520674] [INFO] [RUST] Platform driver registered successfully
+[ 3491.520700] [INFO] [RUST] probe_rust() called
+[ 3491.520701] [INFO] [RUST] Got platform device
+[ 3491.520703] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.520704] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.520705] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.520707] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.520708] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.520709] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.520710] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.520756] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.520757] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.520767] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.520768] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.520835] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.520848] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.520849] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.520850] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.520851] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.520852] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.520863] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.520864] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.520896] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.520897] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.520898] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.520899] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.521010] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.521020] [INFO] [RUST] Platform device registered successfully
+[ 3491.568520] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.568524] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.568528] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.568530] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.568556] [INFO] [RUST] Platform driver registered successfully
+[ 3491.568583] [INFO] [RUST] probe_rust() called
+[ 3491.568585] [INFO] [RUST] Got platform device
+[ 3491.568587] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.568589] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.568590] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.568591] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.568592] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.568593] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.568594] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.568605] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.568606] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.568616] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.568617] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.568631] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.568633] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.568634] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.568635] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.568636] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.568637] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.568640] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.568641] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.568647] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.568648] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.568650] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.568651] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.568723] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.568733] [INFO] [RUST] Platform device registered successfully
+[ 3491.617488] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.617493] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.617501] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.617502] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.617525] [INFO] [RUST] Platform driver registered successfully
+[ 3491.617550] [INFO] [RUST] probe_rust() called
+[ 3491.617551] [INFO] [RUST] Got platform device
+[ 3491.617553] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.617554] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.617556] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.617557] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.617558] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.617560] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.617561] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.617609] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.617611] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.617627] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.617628] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.617693] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.617705] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.617707] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.617708] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.617709] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.617710] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.617722] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.617723] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.617757] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.617758] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.617759] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.617760] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.617849] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.617861] [INFO] [RUST] Platform device registered successfully
+[ 3491.661501] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.661507] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.661520] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.661521] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.661560] [INFO] [RUST] Platform driver registered successfully
+[ 3491.661597] [INFO] [RUST] probe_rust() called
+[ 3491.661598] [INFO] [RUST] Got platform device
+[ 3491.661600] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.661602] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.661604] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.661605] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.661607] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.661608] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.661609] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.661621] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.661623] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.661651] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.661653] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.661666] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.661669] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.661670] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.661671] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.661672] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.661673] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.661675] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.661676] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.661683] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.661684] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.661685] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.661686] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.661777] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.661791] [INFO] [RUST] Platform device registered successfully
+[ 3491.720241] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[ 3491.720244] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[ 3491.720253] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[ 3491.720255] [INFO] [RUST] PCI device stored, registering platform driver...
+[ 3491.720275] [INFO] [RUST] Platform driver registered successfully
+[ 3491.720298] [INFO] [RUST] probe_rust() called
+[ 3491.720299] [INFO] [RUST] Got platform device
+[ 3491.720300] sp5100-tco sp5100-tco: [RUST] Allocated sp5100_tco structure
+[ 3491.720303] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[ 3491.720304] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[ 3491.720305] sp5100-tco sp5100-tco: [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[ 3491.720306] sp5100-tco sp5100-tco: [RUST] Setting up watchdog device
+[ 3491.720307] sp5100-tco sp5100-tco: [RUST] sp5100_tco_setupdevice() called
+[ 3491.720308] sp5100-tco sp5100-tco: [RUST] Using non-MMIO setup path
+[ 3491.720354] sp5100-tco sp5100-tco: [RUST] Setup chipset: mmio=0xfeb00000 alt_mmio=0xfed80b00
+[ 3491.720355] sp5100-tco sp5100-tco: [RUST] Preparing watchdog base
+[ 3491.720373] sp5100-tco sp5100-tco: MMIO address 0xfeb00000 mapped at 0xffffc90006489000
+[ 3491.720375] sp5100-tco sp5100-tco: [RUST] Base prepared successfully, enabling timer
+[ 3491.720442] sp5100-tco sp5100-tco: [RUST] Timer enable sequence completed
+[ 3491.720454] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[ 3491.720455] sp5100-tco sp5100-tco: [RUST]   DISABLED bit (bit 3) = 0
+[ 3491.720456] sp5100-tco sp5100-tco: [RUST]   FIRED bit (bit 1) = 0
+[ 3491.720457] sp5100-tco sp5100-tco: [RUST]   START_STOP bit (bit 0) = 0
+[ 3491.720458] sp5100-tco sp5100-tco: [RUST] Setting watchdog action to: POWEROFF
+[ 3491.720469] sp5100-tco sp5100-tco: [RUST] Control register after action config: 0x00000000
+[ 3491.720470] sp5100-tco sp5100-tco: [RUST] Setting timeout to 60 sec and stopping timer
+[ 3491.720503] sp5100-tco sp5100-tco: [RUST] Timer initialization complete
+[ 3491.720505] sp5100-tco sp5100-tco: [RUST] sp5100_tco_timer_init succeeded
+[ 3491.720506] sp5100-tco sp5100-tco: [RUST] Non-MMIO setup complete, returning ret=0
+[ 3491.720507] sp5100-tco sp5100-tco: [RUST] Registering watchdog device
+[ 3491.720579] sp5100-tco sp5100-tco: [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[ 3491.720589] [INFO] [RUST] Platform device registered successfully

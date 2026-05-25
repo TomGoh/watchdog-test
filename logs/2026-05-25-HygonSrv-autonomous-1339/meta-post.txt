@@ -1,0 +1,14 @@
+--- post-run lsmod (watchdog-related) ---
+
+Authorized users only. All activities may be monitored and reported.
+
+--- post-run /sys/class/watchdog inventory ---
+
+Authorized users only. All activities may be monitored and reported.
+/sys/class/watchdog/watchdog0
+  identity     = SP5100 TCO timer
+  timeout      = 60
+  pretimeout   = 0
+  state        = inactive
+  nowayout     = 0
+  bootstatus   = 0
