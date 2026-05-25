@@ -1,0 +1,21 @@
+# meta.txt — written by scripts/capture-run.sh
+#
+# Reproduce this run with:
+#   ./scripts/capture-run.sh 'Hygon' --lab 'softdog-rust'
+#
+captured-by: ./scripts/capture-run.sh
+captured-at: 2026-05-25T09:24:36+08:00
+target:      Hygon
+kind:        lab-softdog_rust
+lab-module:  softdog-rust
+
+--- ssh Hygon 'uname -a; uptime' ---
+Kylin V11
+Linux gc-pc 6.6.103-GC-20260522-1417 #2 SMP PREEMPT_DYNAMIC Fri May 22 14:18:42 CST 2026 x86_64 x86_64 x86_64 GNU/Linux
+ 09:24:37 up 2 min,  2 users,  load average: 0.22, 0.28, 0.12
+
+--- pre-run lsmod (watchdog-related) ---
+Kylin V11
+
+--- pre-run /sys/class/watchdog inventory ---
+Kylin V11

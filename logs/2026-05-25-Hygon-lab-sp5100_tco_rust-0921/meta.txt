@@ -1,0 +1,21 @@
+# meta.txt — written by scripts/capture-run.sh
+#
+# Reproduce this run with:
+#   ./scripts/capture-run.sh 'Hygon' --lab 'sp5100_tco-rust'
+#
+captured-by: ./scripts/capture-run.sh
+captured-at: 2026-05-25T09:21:06+08:00
+target:      Hygon
+kind:        lab-sp5100_tco_rust
+lab-module:  sp5100_tco-rust
+
+--- ssh Hygon 'uname -a; uptime' ---
+Kylin V11
+Linux gc-pc 6.6.103-GC-20260522-1417 #2 SMP PREEMPT_DYNAMIC Fri May 22 14:18:42 CST 2026 x86_64 x86_64 x86_64 GNU/Linux
+ 09:21:06 up 2 days, 16:26,  6 users,  load average: 0.00, 0.00, 0.00
+
+--- pre-run lsmod (watchdog-related) ---
+Kylin V11
+
+--- pre-run /sys/class/watchdog inventory ---
+Kylin V11

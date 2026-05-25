@@ -1,0 +1,63 @@
+[    0.000000] psci: Trusted OS migration not required
+[    0.000000] Memory: 13367628K/16711680K available (17984K kernel code, 6370K rwdata, 16052K rodata, 6720K init, 2056K bss, 3212980K reserved, 131072K cma-reserved)
+[    0.128745] Initialise system trusted keyrings
+[    0.152261] ACPI GTDT: found 1 SBSA generic Watchdog(s).
+[    0.169161] xhci-hcd-rust PHYT0039:00: xHCI Host Controller
+[    0.169168] xhci-hcd-rust PHYT0039:00: new USB bus registered, assigned bus number 1
+[    0.169197] xhci-hcd-rust PHYT0039:00: hcc params 0x08007f0d hci version 0x110 quirks 0x0010000000080090
+[    0.169212] xhci-hcd-rust PHYT0039:00: irq 33, io mem 0x26f08000
+[    0.169268] xhci-hcd-rust PHYT0039:00: xHCI Host Controller
+[    0.169272] xhci-hcd-rust PHYT0039:00: new USB bus registered, assigned bus number 2
+[    0.169275] xhci-hcd-rust PHYT0039:00: Host supports USB 3.1 Enhanced SuperSpeed
+[    0.170525] xhci-hcd-rust PHYT0039:01: xHCI Host Controller
+[    0.170531] xhci-hcd-rust PHYT0039:01: new USB bus registered, assigned bus number 3
+[    0.170558] xhci-hcd-rust PHYT0039:01: hcc params 0x08007f0d hci version 0x110 quirks 0x0010000000080090
+[    0.170573] xhci-hcd-rust PHYT0039:01: irq 34, io mem 0x26f28000
+[    0.170623] xhci-hcd-rust PHYT0039:01: xHCI Host Controller
+[    0.170625] xhci-hcd-rust PHYT0039:01: new USB bus registered, assigned bus number 4
+[    0.170629] xhci-hcd-rust PHYT0039:01: Host supports USB 3.1 Enhanced SuperSpeed
+[    0.171099] xhci-hcd-rust PHYT0039:02: xHCI Host Controller
+[    0.171103] xhci-hcd-rust PHYT0039:02: new USB bus registered, assigned bus number 5
+[    0.171128] xhci-hcd-rust PHYT0039:02: hcc params 0x08007f0d hci version 0x110 quirks 0x0010000000080090
+[    0.171137] xhci-hcd-rust PHYT0039:02: irq 35, io mem 0x26f48000
+[    0.171183] xhci-hcd-rust PHYT0039:02: xHCI Host Controller
+[    0.171185] xhci-hcd-rust PHYT0039:02: new USB bus registered, assigned bus number 6
+[    0.171188] xhci-hcd-rust PHYT0039:02: Host supports USB 3.0 SuperSpeed
+[    0.171643] xhci-hcd-rust PHYT0039:03: xHCI Host Controller
+[    0.171647] xhci-hcd-rust PHYT0039:03: new USB bus registered, assigned bus number 7
+[    0.171672] xhci-hcd-rust PHYT0039:03: hcc params 0x08007f0d hci version 0x110 quirks 0x0010000000080090
+[    0.171680] xhci-hcd-rust PHYT0039:03: irq 36, io mem 0x26f68000
+[    0.171726] xhci-hcd-rust PHYT0039:03: xHCI Host Controller
+[    0.171728] xhci-hcd-rust PHYT0039:03: new USB bus registered, assigned bus number 8
+[    0.171731] xhci-hcd-rust PHYT0039:03: Host supports USB 3.0 SuperSpeed
+[    0.172177] xhci-hcd-rust PHYT0039:04: xHCI Host Controller
+[    0.172181] xhci-hcd-rust PHYT0039:04: new USB bus registered, assigned bus number 9
+[    0.172202] xhci-hcd-rust PHYT0039:04: USB3 root hub has no ports
+[    0.172204] xhci-hcd-rust PHYT0039:04: hcc params 0x08007f0d hci version 0x110 quirks 0x0010000000080090
+[    0.172212] xhci-hcd-rust PHYT0039:04: irq 37, io mem 0x26f88000
+[    0.172489] xhci-hcd-rust PHYT0039:05: xHCI Host Controller
+[    0.172493] xhci-hcd-rust PHYT0039:05: new USB bus registered, assigned bus number 10
+[    0.172513] xhci-hcd-rust PHYT0039:05: USB3 root hub has no ports
+[    0.172514] xhci-hcd-rust PHYT0039:05: hcc params 0x08007f0d hci version 0x110 quirks 0x0010000000080090
+[    0.172522] xhci-hcd-rust PHYT0039:05: irq 38, io mem 0x26fa8000
+[    0.172794] xhci-hcd-rust PHYT0039:06: xHCI Host Controller
+[    0.172798] xhci-hcd-rust PHYT0039:06: new USB bus registered, assigned bus number 11
+[    0.172820] xhci-hcd-rust PHYT0039:06: hcc params 0x08007f0d hci version 0x110 quirks 0x0010000000080090
+[    0.172828] xhci-hcd-rust PHYT0039:06: irq 39, io mem 0x26ee8000
+[    0.172870] xhci-hcd-rust PHYT0039:06: xHCI Host Controller
+[    0.172873] xhci-hcd-rust PHYT0039:06: new USB bus registered, assigned bus number 12
+[    0.172876] xhci-hcd-rust PHYT0039:06: Host supports USB 3.0 SuperSpeed
+[    0.183938] [INFO] [RUST] arm_smc_wdt: module init — registering platform driver
+[    0.192462] watchdog: NMI not fully supported
+[    0.192463] watchdog: Hard watchdog permanently disabled
+[    0.428412] usb 9-1: new high-speed USB device number 2 using xhci-hcd-rust
+[    0.428422] usb 10-1: new full-speed USB device number 2 using xhci-hcd-rust
+[    6.306440] hid-generic 0018:347D:7853.0001: Rust input,hidraw0: I2C HID v1.00 Device [BLTP7853:00 347D:7853] on i2c-BLTP7853:00
+[    6.326521] btusb(rust): rust_btusb_probe success
+[    6.326575] btusb(rust): rust_btusb_open done
+[    6.630556] btusb(rust): RTL: Setup complete
+[    6.675352] hid-multitouch 0018:347D:7853.0001: Rust input,hidraw0: I2C HID v1.00 Device [BLTP7853:00 347D:7853] on i2c-BLTP7853:00
+[    8.747587] btusb(rust): rust_btusb_flush done
+[    8.747846] btusb(rust): rust_btusb_stop_traffic done
+[    8.747859] btusb(rust): rust_btusb_close done
+[   11.245445] btusb(rust): rust_btusb_stop_traffic done

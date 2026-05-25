@@ -1,0 +1,39 @@
+[    0.088579] Memory: 16071864K/16633920K available (24576K kernel code, 6009K rwdata, 15756K rodata, 4552K init, 5648K bss, 561800K reserved, 0K cma-reserved)
+[    0.259570] NMI watchdog: Enabled. Permanently consumes one hw-PMU counter.
+[    0.374077] Initialise system trusted keyrings
+[    1.485096] hid-generic 0003:093A:2510.0001: Rust input,hidraw0: USB HID v1.11 Mouse [PixArt USB Optical Mouse] on usb-0000:04:00.3-1/input0
+[    2.952495] hid-generic 0003:31B2:0020.0002: Rust input,hidraw1: USB HID v1.11 Device [Hifi 384Khz Type-C Audio Audio fs 1.0] on usb-0000:04:00.3-3.1/input3
+[    6.492595] [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+[    6.492598] [INFO] [RUST] Scanning for SP5100 PCI devices...
+[    6.492607] [INFO] [RUST] Found matching PCI device: vendor=0x1d94 device=0x790b
+[    6.492608] [INFO] [RUST] PCI device stored, registering platform driver...
+[    6.492633] [INFO] [RUST] Platform driver registered successfully
+[    6.492671] [INFO] [RUST] probe_rust() called
+[    6.492672] [INFO] [RUST] Got platform device
+[    6.492674] [INFO] [RUST] Allocated sp5100_tco structure
+[    6.492675] [INFO] [RUST] Hardware detection: vendor=0x1d94 device=0x790b revision=0x59
+[    6.492677] [INFO] [RUST] Detected EFCH layout (AMD/Hygon Family 16h+, rev=0x59)
+[    6.492678] [INFO] [RUST] Configuring watchdog: heartbeat=60 sec, nowayout=0
+[    6.492679] [INFO] [RUST] Setting up watchdog device
+[    6.492680] [INFO] [RUST] sp5100_tco_setupdevice() called
+[    6.492681] [DBG ] [RUST] Got tco structure from watchdog drvdata
+[    6.492682] [INFO] [RUST] Using non-MMIO setup path
+[    6.492699] [INFO] [RUST] Setup chipset: mmio=0x00000000 alt_mmio=0xfed80b00
+[    6.492700] [INFO] [RUST] Preparing watchdog base
+[    6.492720] [INFO] [RUST] Base prepared successfully, enabling timer
+[    6.492734] [INFO] [RUST] Timer enable sequence completed
+[    6.492737] [INFO] [RUST] sp5100_tco_timer_init: Control register = 0x00000000
+[    6.492738] [INFO] [RUST]   DISABLED bit (bit 3) = 0
+[    6.492740] [INFO] [RUST]   FIRED bit (bit 1) = 0
+[    6.492741] [INFO] [RUST]   START_STOP bit (bit 0) = 0
+[    6.492742] [INFO] [RUST] Setting watchdog action to: POWEROFF
+[    6.492745] [INFO] [RUST] Control register after action config: 0x00000000
+[    6.492748] [INFO] [RUST] Setting timeout to 60 sec and stopping timer
+[    6.492754] [INFO] [RUST] Timer initialization complete
+[    6.492756] [INFO] [RUST] sp5100_tco_timer_init succeeded
+[    6.492758] [INFO] [RUST] Non-MMIO setup complete, returning ret=0
+[    6.492759] [INFO] [RUST] Registering watchdog device
+[    6.492982] [INFO] [RUST] Initialized. heartbeat=60 sec (nowayout=0)
+[    6.492994] [INFO] [RUST] Platform device registered successfully
+[ 1054.376503] hid-generic 0003:1C4F:0002.0003: Rust input,hidraw2: USB HID v1.10 Keyboard [SIGMACHIP USB Keyboard] on usb-0000:04:00.3-2.1/input0
+[ 1054.440924] hid-generic 0003:1C4F:0002.0004: Rust input,hidraw3: USB HID v1.10 Device [SIGMACHIP USB Keyboard] on usb-0000:04:00.3-2.1/input1

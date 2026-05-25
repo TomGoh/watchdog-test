@@ -1,0 +1,241 @@
+==========================================
+Run kind:    autonomous
+Started:     2026-05-25T09:06:46+08:00
+Target:      Hygon
+==========================================
+
+Resolving target arch via SSH …
+Kylin V11
+  target arch = x86_64 → x86_64-unknown-linux-musl
+Enumerating pre-existing watchdogs …
+Kylin V11
+  before modprobe: SP5100 TCO timer
+Kylin V11
+Loading our managed watchdog drivers (nowayout=0, arch=x86_64): sp5100_tco-rust softdog-rust
+Kylin V11
+  modprobe sp5100_tco-rust nowayout=0
+Kylin V11
+  modprobe softdog-rust nowayout=0
+Re-enumerating /sys/class/watchdog after bulk modprobe …
+Kylin V11
+  testing 2 watchdog(s):
+    - "SP5100 TCO timer" (known: full per-driver suite)
+    - "Software Watchdog (Rust)" (known: full per-driver suite)
+Pushing 6 binaries to Hygon:/tmp/watchdog-test …
+Kylin V11
+Kylin V11
+Kylin V11
+Kylin V11
+
+============================================================
+Testing identity: "SP5100 TCO timer"
+============================================================
+----- common_conformance-b2a39b2974570286 (identity=SP5100 TCO timer) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 10 tests
+test c01_sysfs_entry_exists ... # probe: watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+ok
+test c02_identity_consistent ... ok
+test c03_options_advertise_keepaliveping ... ok
+test c04_default_timeout_in_range ... ok
+test c05_keepalive_ioctl_works ... ok
+test c06_magic_close_cycle ... ok
+test c07_set_timeout_round_trip ... ok
+test c08_set_timeout_zero_rejected ... ok
+test c09_timeleft_in_range ... ok
+test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] SP5100/SB800 TCO WatchDog Timer Driver (Rust version)
+ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s
+
+----- common_extended-dd8f258405b60d01 (identity=SP5100 TCO timer) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 5 tests
+test c_ext_01_write_byte_ping ... # probe: watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+ok
+test c_ext_02_concurrent_open_ebusy ... ok
+test c_ext_03_set_timeout_clamps_oversize ... ok
+test c_ext_04_bootstatus_readable ... # bootstatus = 0x0000
+ok
+test c_ext_05_timeleft_progresses ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
+
+Kylin V11
+----- sp5100_tco-ca1b5df803d9faab (identity=SP5100 TCO timer) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 12 tests
+test regex_lite_self_check::matches_init_log_pattern ... ok
+test sp5100_01_identity ... ok
+test sp5100_02_options_bitmap ... ok
+test sp5100_03_dmesg_init_log ... ok
+test sp5100_04_chipset_detected ... # detected SP5100 chipset layout = EFCH
+ok
+test sp5100_ext_01_continuous_feed ... # feeding watchdog for 120s (timeout=60, ping every 30s)
+# survived 4 pings over 120s
+ok
+test sp5100_ext_02_write_byte_ping ... ok
+test sp5100_ext_03_settimeout_matrix ... ok
+test sp5100_ext_04_setoptions_disable_enable ... ok
+test sp5100_ext_05_close_without_v_keeps_running ... ok
+test sp5100_ext_06_dmesg_action_consistent ... # detected SP5100 action = POWEROFF
+ok
+test sp5100_ext_99_modprobe_cycle ... # rmmod sp5100_tco-rust
+# modprobe sp5100_tco-rust
+ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.56s
+
+----- gc_test-daf3c698d67d8e87 (identity=SP5100 TCO timer) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 4 tests
+test gc_01_device_info ... # 测试设备：watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# sysfs 信息：identity="SP5100 TCO timer" timeout=60s nowayout=false state="inactive"
+# ioctl 信息：identity="SP5100 TCO timer" options=0x8180 firmware_version=0
+# GC-01 通过：设备信息读取正常
+ok
+test gc_02_feed_within_timeout ... # 测试设备：watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# 阶段 1：SETTIMEOUT 多值往返测试
+#   SETTIMEOUT(5) → 5s ✓
+#   SETTIMEOUT(10) → 10s ✓
+#   SETTIMEOUT(30) → 30s ✓
+# 阶段 2：连续喂狗 120s（timeout=60s，每 30s ping 一次）
+# GC-02 通过：累计喂狗 4 次，120s 内系统存活 —— 喂狗机制正常
+ok
+test gc_03_no_feed_reboot ... # SKIP: lab-CI test requires WATCHDOG_LAB_DANGEROUS=YES_REALLY (this test will REBOOT the machine on success)
+ok
+test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog0 identity="SP5100 TCO timer" options=0x8180 timeout=Some(60)s nowayout=Some(false)
+# 对内核模块 "sp5100_tco-rust"（identity="SP5100 TCO timer"）反复加载/卸载 10 次
+# 第  1/10 轮通过
+# 第  2/10 轮通过
+# 第  3/10 轮通过
+# 第  4/10 轮通过
+# 第  5/10 轮通过
+# 第  6/10 轮通过
+# 第  7/10 轮通过
+# 第  8/10 轮通过
+# 第  9/10 轮通过
+# 第 10/10 轮通过
+# GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
+ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.54s
+
+
+============================================================
+Testing identity: "Software Watchdog (Rust)"
+============================================================
+----- common_conformance-b2a39b2974570286 (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 10 tests
+test c01_sysfs_entry_exists ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
+ok
+test c02_identity_consistent ... ok
+test c03_options_advertise_keepaliveping ... ok
+test c04_default_timeout_in_range ... ok
+test c05_keepalive_ioctl_works ... ok
+test c06_magic_close_cycle ... ok
+test c07_set_timeout_round_trip ... ok
+test c08_set_timeout_zero_rejected ... ok
+test c09_timeleft_in_range ... ok
+test c10_rust_lifecycle_log ... # rust lifecycle: [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.00s
+
+----- common_extended-dd8f258405b60d01 (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 5 tests
+test c_ext_01_write_byte_ping ... # probe: watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
+ok
+test c_ext_02_concurrent_open_ebusy ... ok
+test c_ext_03_set_timeout_clamps_oversize ... ok
+test c_ext_04_bootstatus_readable ... # bootstatus = 0x0000
+ok
+test c_ext_05_timeleft_progresses ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
+
+Kylin V11
+----- softdog-bcda17cdea9d0eb3 (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 10 tests
+test softdog_01_identity ... ok
+test softdog_02_options_advertised ... ok
+test softdog_03_dmesg_init_log ... # softdog init line: [INFO] [RUST] softdog initialized: soft_margin=60s soft_panic=0 nowayout=0
+ok
+test softdog_ext_01_continuous_feed ... # feeding softdog for 120s (timeout=60, ping every 30s)
+# survived 4 pings over 120s
+ok
+test softdog_ext_02_write_byte_ping ... ok
+test softdog_ext_03_settimeout_matrix ... ok
+test softdog_ext_04_setoptions_disable_enable ... ok
+test softdog_ext_05_close_without_v_keeps_running ... ok
+test softdog_ext_06_module_param_visible ... # detected soft_margin=60s nowayout=0
+ok
+test softdog_ext_99_modprobe_cycle ... # rmmod softdog-rust
+# modprobe softdog-rust
+ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 121.56s
+
+----- gc_test-daf3c698d67d8e87 (identity=Software Watchdog (Rust)) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 4 tests
+test gc_01_device_info ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
+# sysfs 信息：identity="Software Watchdog (Rust)" timeout=60s nowayout=false state="inactive"
+# ioctl 信息：identity="Software Watchdog (Rust)" options=0x8380 firmware_version=0
+# GC-01 通过：设备信息读取正常
+ok
+test gc_02_feed_within_timeout ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
+# 阶段 1：SETTIMEOUT 多值往返测试
+#   SETTIMEOUT(5) → 5s ✓
+#   SETTIMEOUT(10) → 10s ✓
+#   SETTIMEOUT(30) → 30s ✓
+# 阶段 2：连续喂狗 120s（timeout=60s，每 30s ping 一次）
+# GC-02 通过：累计喂狗 4 次，120s 内系统存活 —— 喂狗机制正常
+ok
+test gc_03_no_feed_reboot ... # SKIP: lab-CI test requires WATCHDOG_LAB_DANGEROUS=YES_REALLY (this test will REBOOT the machine on success)
+ok
+test gc_04_modprobe_cycle_x10 ... # 测试设备：watchdog1 identity="Software Watchdog (Rust)" options=0x8380 timeout=Some(60)s nowayout=Some(false)
+# 对内核模块 "softdog-rust"（identity="Software Watchdog (Rust)"）反复加载/卸载 10 次
+# 第  1/10 轮通过
+# 第  2/10 轮通过
+# 第  3/10 轮通过
+# 第  4/10 轮通过
+# 第  5/10 轮通过
+# 第  6/10 轮通过
+# 第  7/10 轮通过
+# 第  8/10 轮通过
+# 第  9/10 轮通过
+# 第 10/10 轮通过
+# GC-04 通过：10/10 轮完成 —— 无残留 fd 占用、identity 保持一致、每次 reload 后 ops 仍可用
+ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 120.49s
+
+
+Kylin V11
+Cleanup: rmmod modules loaded by this run:
+Kylin V11
+  rmmod softdog_rust
+
+Done.
+
+Finished:    2026-05-25T09:15:03+08:00

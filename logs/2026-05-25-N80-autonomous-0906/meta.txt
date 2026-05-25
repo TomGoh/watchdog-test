@@ -1,0 +1,20 @@
+# meta.txt — written by scripts/capture-run.sh
+#
+# Reproduce this run with:
+#   ./scripts/capture-run.sh 'N80'
+#
+captured-by: ./scripts/capture-run.sh
+captured-at: 2026-05-25T09:06:44+08:00
+target:      N80
+kind:        autonomous
+
+--- ssh N80 'uname -a; uptime' ---
+Kylin V11
+Linux kylin 6.6.103-GC-20260522-1506 #2 SMP Fri May 22 16:03:59 CST 2026 aarch64 aarch64 aarch64 GNU/Linux
+ 09:06:45 up 2 days, 16:12,  2 users,  load average: 0.12, 0.13, 0.14
+
+--- pre-run lsmod (watchdog-related) ---
+Kylin V11
+
+--- pre-run /sys/class/watchdog inventory ---
+Kylin V11

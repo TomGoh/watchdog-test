@@ -5,12 +5,12 @@ Cargo.lock
 
 # capture-run.sh archives — keep selected baselines; ignore other runs
 logs/[0-9][0-9][0-9][0-9]-*/
-!logs/2026-05-22-N80-autonomous-1637/
-!logs/2026-05-22-Hygon-autonomous-1637/
-!logs/2026-05-22-N80-lab-sbsa_gwdt_rust-1648/
-!logs/2026-05-22-Hygon-lab-sp5100_tco_rust-1652/
-!logs/2026-05-22-N80-lab-softdog_rust-1653/
-!logs/2026-05-22-Hygon-lab-softdog_rust-1653/
+!logs/2026-05-25-N80-autonomous-0906/
+!logs/2026-05-25-Hygon-autonomous-0906/
+!logs/2026-05-25-N80-lab-sbsa_gwdt_rust-0921/
+!logs/2026-05-25-Hygon-lab-sp5100_tco_rust-0921/
+!logs/2026-05-25-N80-lab-softdog_rust-0924/
+!logs/2026-05-25-Hygon-lab-softdog_rust-0924/
 
 # Brainstorming docs (not part of codebase)
 docs/superpowers/

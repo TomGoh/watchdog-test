@@ -1,0 +1,21 @@
+# meta.txt — written by scripts/capture-run.sh
+#
+# Reproduce this run with:
+#   ./scripts/capture-run.sh 'N80' --lab 'sbsa_gwdt-rust'
+#
+captured-by: ./scripts/capture-run.sh
+captured-at: 2026-05-25T09:21:05+08:00
+target:      N80
+kind:        lab-sbsa_gwdt_rust
+lab-module:  sbsa_gwdt-rust
+
+--- ssh N80 'uname -a; uptime' ---
+Kylin V11
+Linux kylin 6.6.103-GC-20260522-1506 #2 SMP Fri May 22 16:03:59 CST 2026 aarch64 aarch64 aarch64 GNU/Linux
+ 09:21:06 up 2 days, 16:26,  2 users,  load average: 0.03, 0.05, 0.07
+
+--- pre-run lsmod (watchdog-related) ---
+Kylin V11
+
+--- pre-run /sys/class/watchdog inventory ---
+Kylin V11

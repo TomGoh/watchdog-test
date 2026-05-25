@@ -46,7 +46,7 @@ creates a fresh directory.
 
 ## How to read a run
 
-If you're investigating "what happened on `N80`'s 2026-05-22
+If you're investigating "what happened on `N80`'s 2026-05-25
 autonomous run", open the directory and look in this order:
 
 1. `meta.txt` first — confirm the run targeted the box you think
@@ -73,13 +73,13 @@ autonomous run", open the directory and look in this order:
 reboots the target.  This changes what success looks like compared with
 an `autonomous` run:
 
-- `tests.log` ends with `client_loop: send disconnect: Broken pipe` /
-  `FAILED: lab_dangerous-… (exit 255)`.  **That's the expected
-  signature of a successful lab run** — the SSH connection died because
-  the box was rebooted by the watchdog.  Only `lab_01_no_ping_reboot`
-  runs to completion; `lab_02` / `lab_03` never get a chance because
-  `cargo test` serializes within one binary and the host was already
-  resetting.
+- `tests.log` first shows `lab_02_magic_v_disarms` passing, proving the
+  Magic-V clean-close path does not reboot the target.  It then runs
+  `lab_01_no_ping_reboot`; success for that final check is
+  `client_loop: send disconnect: Broken pipe` (or another SSH
+  disconnect) followed by `EXPECTED-REBOOT: ... disconnected SSH
+  (exit 255)`.  The SSH connection died because the box was rebooted by
+  the watchdog.
 - `dmesg-delta.log` is much shorter than an autonomous run's (typically
   ~40–60 lines) — it captures the `arming watchdog`, `WCS_EN written`,
   and (on the boxes that print one) the imminent-reset banner, then
@@ -115,17 +115,17 @@ of baseline runs is committed via `!logs/<dir>/` exception rules in
 like on a healthy kernel" and "what does a successful destructive lab
 run look like".
 
-Current canonical set (2026-05-22), produced against the kernel that
+Current canonical set (2026-05-25), produced against the kernel that
 includes the `softdog` / `sbsa_gwdt` / `sp5100_tco` Rust ports:
 
 | Run dir | Type | Identities exercised | Notes |
 |---|---|---|---|
-| `2026-05-22-N80-autonomous-1637/` | autonomous | SBSA Generic Watchdog, Software Watchdog (Rust) | 60/60 pass, gc_03 SKIP by consent gate |
-| `2026-05-22-Hygon-autonomous-1637/` | autonomous | SP5100 TCO timer, Software Watchdog (Rust) | 60/60 pass, gc_03 SKIP by consent gate |
-| `2026-05-22-N80-lab-sbsa_gwdt_rust-1648/` | lab | SBSA Generic Watchdog | `lab_01_no_ping_reboot` fired SBSA WS0→WS1 hardware reset; SSH dropped, box came back on same kernel |
-| `2026-05-22-Hygon-lab-sp5100_tco_rust-1652/` | lab | SP5100 TCO timer | `lab_01_no_ping_reboot` fired SP5100 hardware reset |
-| `2026-05-22-N80-lab-softdog_rust-1653/` | lab | Software Watchdog (Rust) | `lab_01_no_ping_reboot` fired softdog `emergency_restart` |
-| `2026-05-22-Hygon-lab-softdog_rust-1653/` | lab | Software Watchdog (Rust) | same, on x86_64 — confirms the deploy.sh resolver fix that landed today correctly targets softdog (`watchdog1`) when sp5100 is already loaded as `watchdog0` |
+| `2026-05-25-N80-autonomous-0906/` | autonomous | SBSA Generic Watchdog, Software Watchdog (Rust) | 60/60 pass, gc_03 SKIP by consent gate |
+| `2026-05-25-Hygon-autonomous-0906/` | autonomous | SP5100 TCO timer, Software Watchdog (Rust) | 60/60 pass, gc_03 SKIP by consent gate |
+| `2026-05-25-N80-lab-sbsa_gwdt_rust-0921/` | lab | SBSA Generic Watchdog | `lab_02_magic_v_disarms` passed, then `lab_01_no_ping_reboot` fired SBSA hardware reset; SSH dropped and the box came back |
+| `2026-05-25-Hygon-lab-sp5100_tco_rust-0921/` | lab | SP5100 TCO timer | `lab_02_magic_v_disarms` passed, then `lab_01_no_ping_reboot` fired SP5100 hardware reset |
+| `2026-05-25-N80-lab-softdog_rust-0924/` | lab | Software Watchdog (Rust) | `lab_02_magic_v_disarms` passed, then `lab_01_no_ping_reboot` fired softdog `emergency_restart` |
+| `2026-05-25-Hygon-lab-softdog_rust-0924/` | lab | Software Watchdog (Rust) | same, on x86_64 |
 
 If a debugging run is interesting enough to share but isn't a new
 baseline, attach the relevant files to a GitHub issue rather than

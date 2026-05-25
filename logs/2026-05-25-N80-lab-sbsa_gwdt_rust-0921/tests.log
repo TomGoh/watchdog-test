@@ -1,0 +1,45 @@
+==========================================
+Run kind:    lab-sbsa_gwdt_rust
+Started:     2026-05-25T09:21:05+08:00
+Target:      N80
+==========================================
+
+Resolving target arch via SSH …
+Kylin V11
+  target arch = aarch64 → aarch64-unknown-linux-musl
+
+================================================================================
+  ATTENTION — LAB MODE will load sbsa_gwdt-rust on N80 and run lab checks
+  against its watchdog.  It runs the non-rebooting Magic-V check first, then
+  the no-ping reboot check.  The final check may REBOOT the machine when the
+  watchdog fires correctly.
+  Press Ctrl-C in the next 5 seconds to abort.
+================================================================================
+
+Kylin V11
+Loading kernel module sbsa_gwdt-rust …
+  module sbsa_gwdt-rust → identity "SBSA Generic Watchdog"
+Pushing 1 binaries to N80:/tmp/watchdog-test …
+Kylin V11
+----- lab_dangerous-d8adcfce158468b2::lab_02_magic_v_disarms (identity=SBSA Generic Watchdog) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 1 test
+test lab_02_magic_v_disarms ... # watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(10)s nowayout=Some(false)
+# slept 10s past 5s timeout; system survived → magic-V works
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 10.00s
+
+----- lab_dangerous-d8adcfce158468b2::lab_01_no_ping_reboot (identity=SBSA Generic Watchdog, reboot expected) -----
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+Kylin V11
+
+running 1 test
+test lab_01_no_ping_reboot ... # watchdog0 identity="SBSA Generic Watchdog" options=0x81a0 timeout=Some(5)s nowayout=Some(false)
+# arming watchdog with timeout=5s; expecting reset within ~10s
+Timeout, server 10.42.27.17 not responding.
+EXPECTED-REBOOT: lab_dangerous-d8adcfce158468b2::lab_01_no_ping_reboot disconnected SSH (exit 255)
+
+Finished:    2026-05-25T09:23:23+08:00

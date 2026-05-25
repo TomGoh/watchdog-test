@@ -313,9 +313,14 @@ case "$ARCH" in
 esac
 
 echo "Loading our managed watchdog drivers (nowayout=0, arch=$ARCH): $MODULES_TO_LOAD"
+MODULES_LOADED_BY_US=""
 for mod in $MODULES_TO_LOAD; do
     if ssh "$TARGET" "sudo modprobe $mod nowayout=0 2>/dev/null"; then
         echo "  modprobe $mod nowayout=0"
+        mod_lsmod="${mod//-/_}"
+        if ! grep -qx "$mod_lsmod" <<< "$PRE_LOADED_MODULES"; then
+            MODULES_LOADED_BY_US="${MODULES_LOADED_BY_US}${mod_lsmod}"$'\n'
+        fi
     else
         echo "  modprobe $mod failed (driver not applicable on this hardware — skipping)"
     fi
@@ -376,8 +381,7 @@ for id in "${IDENTITIES[@]}"; do
 done
 
 # ---------------------------------------------------------------------------
-# Cleanup: rmmod the modules WE loaded (anything in lsmod that wasn't
-# present before the script started).  Pre-existing modules (PCI auto-
+# Cleanup: rmmod the modules WE loaded.  Pre-existing modules (PCI auto-
 # probed at boot, etc.) are left alone.
 #
 # Historical note: this step used to be omitted because the Rust
@@ -391,20 +395,18 @@ done
 # every run and would catch a regression immediately.
 # ---------------------------------------------------------------------------
 echo
-POST_LOADED_MODULES="$(ssh "$TARGET" 'lsmod | awk "NR>1 {print \$1}"' || true)"
-LOADED_BY_US="$(comm -23 \
-    <(echo "$POST_LOADED_MODULES" | sort -u) \
-    <(echo "$PRE_LOADED_MODULES"  | sort -u))"
-if [ -n "$LOADED_BY_US" ]; then
+if [ -n "$MODULES_LOADED_BY_US" ]; then
     echo "Cleanup: rmmod modules loaded by this run:"
     while IFS= read -r mod; do
         [ -z "$mod" ] && continue
-        if ssh "$TARGET" "sudo rmmod $mod 2>/dev/null"; then
+        if ! ssh "$TARGET" "lsmod | awk 'NR>1 {print \$1}' | grep -qx '$mod'"; then
+            echo "  $mod already unloaded"
+        elif ssh "$TARGET" "sudo rmmod $mod 2>/dev/null"; then
             echo "  rmmod $mod"
         else
             echo "  rmmod $mod failed (still in use? — left loaded)"
         fi
-    done <<< "$LOADED_BY_US"
+    done <<< "$MODULES_LOADED_BY_US"
 fi
 
 echo
