@@ -16,3 +16,6 @@ logs/[0-9][0-9][0-9][0-9]-*/
 
 # Brainstorming docs (not part of codebase)
 docs/superpowers/
+
+# Generated QA worksheet (reproduce: python3 scripts/gen_test_excel.py)
+/watchdog_test_cases.xlsx
