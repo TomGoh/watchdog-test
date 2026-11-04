@@ -285,6 +285,10 @@ attempted — they'd just be noise.
 
 After the run the script `rmmod`s every module it loaded and leaves
 pre-existing modules (PCI auto-probed at boot, etc.) untouched.
+A failing test binary doesn't stop the run.  The rest of the matrix
+still runs and cleanup still happens.  At the end, `deploy.sh` lists
+every binary that failed and exits 1, and `capture-run.sh` passes that
+status through.
 `rmmod` was historically unsafe because of an exit/unregister race in
 the Rust sbsa_gwdt and softdog ports — that race was fixed by kernel
 commits `80f0d9ea4d3` (sync-cancel hrtimers + ops.owner threading) and

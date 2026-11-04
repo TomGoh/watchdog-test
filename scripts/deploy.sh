@@ -141,14 +141,24 @@ push_binaries() {
     done
 }
 
+# Failures collected across the autonomous run.  A failing binary doesn't
+# stop the matrix (the remaining binaries / identities still run, and the
+# modules we loaded still get rmmod'ed), but deploy.sh exits nonzero at the
+# end if anything here is non-empty.
+FAILED_RUNS=()
+
 # Run all tests in a single binary on the target.  $1=binary basename, $2=identity,
 # $3=extra env (string like 'WATCHDOG_LAB_DANGEROUS=YES_REALLY')
 run_binary() {
-    local bin="$1" identity="$2" extra_env="${3:-}"
+    local bin="$1" identity="$2" extra_env="${3:-}" rc=0
     echo "----- $bin (identity=$identity) -----"
     target_sh_tty \
         "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }$SUDO_E $REMOTE_DIR/$bin --test-threads=1 --nocapture --include-ignored" \
-        || echo "FAILED: $bin (exit $?)"
+        || rc=$?
+    if [ "$rc" -ne 0 ]; then
+        echo "FAILED: $bin (exit $rc)"
+        FAILED_RUNS+=("$bin (identity=\"$identity\", exit $rc)")
+    fi
 }
 
 # Run one exact test in a single binary.  Keep lab mode deterministic:
@@ -396,7 +406,8 @@ for id in "${IDENTITIES[@]}"; do
         if [ -n "$bin" ]; then
             run_binary "$bin" "$id"
         else
-            echo "WARN: no $base-* binary found in $REMOTE_DIR" >&2
+            echo "FAILED: no $base-* binary found in $REMOTE_DIR" >&2
+            FAILED_RUNS+=("$base-* missing (identity=\"$id\")")
         fi
     fi
     # gc_test: the 4-item end-to-end QA procedure (driver-agnostic).
@@ -433,4 +444,11 @@ if [ -n "$MODULES_LOADED_BY_US" ]; then
 fi
 
 echo
-echo "Done."
+if [ "${#FAILED_RUNS[@]}" -gt 0 ]; then
+    echo "FAILED: ${#FAILED_RUNS[@]} test binary run(s) did not pass:" >&2
+    for f in "${FAILED_RUNS[@]}"; do
+        echo "  - $f" >&2
+    done
+    exit 1
+fi
+echo "Done — all test binaries passed."
