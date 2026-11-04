@@ -75,6 +75,7 @@ cd "$(dirname "$0")/.."
 
 # shellcheck source=lib/target.sh
 . scripts/lib/target.sh
+target_refuse_sudo_wrapper
 target_ensure_sudo
 
 # ---------------------------------------------------------------------------

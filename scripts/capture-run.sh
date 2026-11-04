@@ -64,6 +64,7 @@ cd "$(dirname "$0")/.."
 
 # shellcheck source=lib/target.sh
 . scripts/lib/target.sh
+target_refuse_sudo_wrapper   # before anything is written
 
 # ---------------------------------------------------------------------------
 # Shared snapshot helpers.
@@ -96,15 +97,19 @@ write_watchdog_inventory() {
     ' 2>&1 || true
 }
 
+# $2 (optional): a note written as the first line of dmesg-delta.log, e.g.
+# to flag that pre and post come from different boots.
 capture_post() {
-    local run_dir="$1"
+    local run_dir="$1" delta_note="${2:-}"
 
     capture_dmesg "$run_dir/dmesg-post.log"
     echo "  wrote dmesg-post.log ($(wc -l <"$run_dir/dmesg-post.log") lines)"
 
-    diff "$run_dir/dmesg-pre.log" "$run_dir/dmesg-post.log" \
-        | grep '^>' | sed 's/^> //' \
-        > "$run_dir/dmesg-delta.log" || true
+    {
+        [ -n "$delta_note" ] && echo "# $delta_note"
+        diff "$run_dir/dmesg-pre.log" "$run_dir/dmesg-post.log" \
+            | grep '^>' | sed 's/^> //' || true
+    } > "$run_dir/dmesg-delta.log"
     echo "  wrote dmesg-delta.log ($(wc -l <"$run_dir/dmesg-delta.log") lines)"
 
     {
@@ -132,36 +137,76 @@ if [ -n "$FINISH_DIR" ]; then
     target_ensure_sudo
     echo "Finishing $FINISH_DIR/ on $TARGET_DESC"
 
+    # Did the target actually reboot since the run started, and which boot
+    # did the run happen in?  meta.txt records the boot ID at run start.
+    RUN_BOOT_ID="$(sed -n 's/^boot-id:[[:space:]]*//p' "$FINISH_DIR/meta.txt" | head -1)"
+    NOW_BOOT_ID="$(target_boot_id)"
+    FINISH_RC=0
+    if [ -z "$RUN_BOOT_ID" ]; then
+        REBOOTED="unknown"
+        JOURNAL_BOOT="-1"
+        STATUS_MSG="meta.txt has no boot-id (run captured by an older capture-run.sh); assuming the run's boot is the previous one (journalctl -b -1)."
+    elif [ "$RUN_BOOT_ID" = "$NOW_BOOT_ID" ]; then
+        REBOOTED="no"
+        JOURNAL_BOOT=""
+        STATUS_MSG="NO reboot since this run started (boot-id unchanged: $RUN_BOOT_ID) — the watchdog did not reset the machine, or the run is still in progress."
+        FINISH_RC=1
+    else
+        REBOOTED="yes"
+        # /proc gives the ID with dashes; journalctl -b wants 32 hex digits.
+        JOURNAL_BOOT="$(printf '%s' "$RUN_BOOT_ID" | tr -d -)"
+        STATUS_MSG="Rebooted since the run started (run boot-id $RUN_BOOT_ID, now $NOW_BOOT_ID)."
+    fi
+    if [ "$REBOOTED" = "yes" ]; then
+        echo "  $STATUS_MSG"
+    else
+        echo "  WARNING: $STATUS_MSG" >&2
+    fi
+
     {
         echo
         echo "=========================================="
         echo "Resumed by --finish: $(date -Iseconds)"
         echo "Current boot uptime: $(uptime)"
-        echo "(If the machine rebooted, the lines above were the last ones"
-        echo " flushed to disk before the watchdog reset.)"
+        echo "$STATUS_MSG"
+        if [ "$REBOOTED" != "no" ]; then
+            echo "(The lines above are the last ones flushed to disk before the reset.)"
+        fi
         echo "=========================================="
     } >> "$FINISH_DIR/tests.log"
 
-    capture_post "$FINISH_DIR"
+    # Re-snapshot.  After a reboot, dmesg-pre (old boot) vs dmesg-post (new
+    # boot) is not "what this run added"; flag that in the delta file.
+    if [ "$REBOOTED" = "no" ]; then
+        capture_post "$FINISH_DIR"
+    else
+        capture_post "$FINISH_DIR" "dmesg-pre.log and dmesg-post.log are from DIFFERENT boots, so this is not the run's own delta; see dmesg-prevboot.log for the kernel log of the boot the run happened in."
+    fi
 
     # The interesting kernel lines (the watchdog arming / firing) belong to
-    # the PREVIOUS boot; current dmesg can't see them.  Pull them from the
-    # journal when it's persistent.
-    if command -v journalctl >/dev/null 2>&1 \
-        && $SUDO_N journalctl -k -b -1 --no-pager > "$FINISH_DIR/dmesg-prevboot.log.raw" 2>&1; then
+    # the boot the run happened in; current dmesg can't see them.  Pull them
+    # from the journal (needs a persistent journal).
+    if [ -z "$JOURNAL_BOOT" ]; then
+        echo "  no reboot — skipped dmesg-prevboot.log (current dmesg above already covers the run)"
+    elif command -v journalctl >/dev/null 2>&1 \
+        && $SUDO_N journalctl -k -b "$JOURNAL_BOOT" --no-pager > "$FINISH_DIR/dmesg-prevboot.log.raw" 2>&1; then
         grep -iE "$DMESG_FILTER" "$FINISH_DIR/dmesg-prevboot.log.raw" \
             > "$FINISH_DIR/dmesg-prevboot.log" || true
-        echo "  wrote dmesg-prevboot.log ($(wc -l <"$FINISH_DIR/dmesg-prevboot.log") lines, from journalctl -k -b -1)"
+        echo "  wrote dmesg-prevboot.log ($(wc -l <"$FINISH_DIR/dmesg-prevboot.log") lines, from journalctl -k -b $JOURNAL_BOOT)"
     else
-        echo "  previous-boot kernel log unavailable (journal not persistent?) — skipped dmesg-prevboot.log"
+        echo "  kernel log of the run's boot unavailable (journal not persistent, or boot $JOURNAL_BOOT rotated out) — skipped dmesg-prevboot.log"
     fi
     rm -f "$FINISH_DIR/dmesg-prevboot.log.raw"
     rm -f "$FINISH_DIR/PENDING-FINISH"
 
     echo
-    echo "Done — see $FINISH_DIR/"
+    if [ "$FINISH_RC" -ne 0 ]; then
+        echo "FINISHED WITH WARNING — no reboot detected; see $FINISH_DIR/" >&2
+    else
+        echo "Done — see $FINISH_DIR/"
+    fi
     ls -lh "$FINISH_DIR/"
-    exit 0
+    exit "$FINISH_RC"
 fi
 
 target_ensure_sudo
@@ -205,6 +250,7 @@ REPRO="./scripts/capture-run.sh"
     echo "target:      ${TARGET:-<local> $TARGET_LABEL}"
     echo "kind:        $RUN_KIND"
     [ -n "$LAB_MODULE" ] && echo "lab-module:  $LAB_MODULE"
+    echo "boot-id:     $(target_boot_id)"
     echo
     echo "--- uname -a; uptime ---"
     target_sh 'uname -a; uptime' 2>&1 || true
@@ -308,6 +354,10 @@ if [ -n "$LAB_MODULE" ] && ! is_local; then
 fi
 rm -f "$RUN_DIR/PENDING-FINISH"
 
+# A long run can outlive sudo's credential cache (timestamp_timeout, 15 min
+# by default), and capture_dmesg uses `sudo -n`.  Refresh it first; this
+# does nothing when the credential is still valid or NOPASSWD is set.
+target_ensure_sudo || echo "  WARNING: sudo not available; dmesg-post.log will only hold sudo's error." >&2
 capture_post "$RUN_DIR"
 
 echo

@@ -142,10 +142,11 @@ scripts run everything directly: no `sshd`, no SSH keys, no `scp`.
 
 - Run them as your **normal user, not with `sudo`**.  They call `sudo`
   themselves for `modprobe` / `rmmod` / the test binaries / `dmesg`, and
-  prompt once up front if `NOPASSWD` isn't configured.  Under
-  `sudo ./scripts/...` the build usually fails because root has no
-  `cargo`, and every file the run creates ends up owned by root.
-  (If you really are root, local mode works without sudo installed.)
+  prompt once up front if `NOPASSWD` isn't configured.  If you start
+  them as `sudo ./scripts/...`, they refuse to run before writing
+  anything.  Under sudo, root usually has no `cargo`, and every file
+  the run creates would be owned by root.  (If you're logged in as
+  root directly, local mode works without sudo installed.)
 - The run directory is named after `hostname -s`, e.g.
   `logs/2026-11-04-kylin-pc-autonomous-0930/`.
 - **Local lab runs can't finish by themselves.**  When the watchdog
@@ -157,9 +158,12 @@ scripts run everything directly: no `sshd`, no SSH keys, no `scp`.
   ```
   This writes `dmesg-post.log` / `dmesg-delta.log` / `meta-post.txt`.
   If the systemd journal is persistent, it also writes
-  `dmesg-prevboot.log`: the kernel log of the boot the watchdog ended
-  (`journalctl -k -b -1`).  Until you run it, the directory contains a
-  `PENDING-FINISH` file as a reminder.
+  `dmesg-prevboot.log`: the kernel log of the boot the run happened in.
+  `meta.txt` records the `boot-id` at run start, and `--finish` uses it
+  to fetch that exact boot (`journalctl -k -b <id>`), even if you
+  rebooted again in between.  If the boot ID hasn't changed (no reset
+  happened), `--finish` says so and exits 1.  Until you run it, the
+  directory contains a `PENDING-FINISH` file as a reminder.
 
 `<TARGET>` = `localhost` / `127.0.0.1` still works too: that goes
 through SSH as before.

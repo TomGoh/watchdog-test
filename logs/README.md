@@ -42,7 +42,7 @@ creates a fresh directory.
 | `tests.log` | full stdout of `./scripts/deploy.sh <TARGET>` (or `… --lab <module>`) | per-test-binary stdout in invocation order, including individual `test foo … ok / FAILED` lines, SKIP markers, and any `# probe:` / `# rust lifecycle:` annotations |
 | `dmesg-post.log` | same sudo dmesg capture and local filter, AFTER the tests finish | the same filter at the end of the run |
 | `dmesg-delta.log` | `diff` of pre vs post | the kernel-log lines added by THIS test run — usually the most interesting view |
-| `dmesg-prevboot.log` | `capture-run.sh --finish` (local lab runs only) | watchdog-related lines of the boot the watchdog reset (`journalctl -k -b -1`); only present when the journal is persistent |
+| `dmesg-prevboot.log` | `capture-run.sh --finish` (local lab runs only) | watchdog-related lines of the boot the run happened in (`journalctl -k -b <boot-id from meta.txt>`); only present when the machine actually rebooted and the journal is persistent.  After a reboot, `dmesg-delta.log` compares two different boots; its first line says so. |
 | `meta-post.txt` | snapshots taken AFTER the run | post-run `lsmod` and `/sys/class/watchdog/*` dump, so you can see what changed (modules loaded, devices appeared/disappeared) |
 
 ## How to read a run

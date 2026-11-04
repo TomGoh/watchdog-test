@@ -39,6 +39,28 @@ fi
 
 is_local() { [ "$TARGET_MODE" = "local" ]; }
 
+# Refuse `sudo ./scripts/...`.  Call right after sourcing, before anything
+# is written.  Under sudo, root usually has no Rust toolchain (the build
+# fails partway), ssh uses root's keys and known_hosts instead of yours,
+# and every file the run creates (logs/<run>/, target/) ends up owned by
+# root, which your normal user then can't delete.
+# Logging in as root directly (no SUDO_USER) is still allowed.
+target_refuse_sudo_wrapper() {
+    if [ "$(id -u)" -ne 0 ] || [ -z "${SUDO_USER:-}" ] || [ "$SUDO_USER" = "root" ]; then
+        return 0
+    fi
+    echo "Don't run this script with sudo." >&2
+    echo "Run the same command as '$SUDO_USER' without sudo; the script calls" >&2
+    echo "sudo itself for the steps that need root (modprobe, tests, dmesg)." >&2
+    exit 1
+}
+
+# Boot ID of the target's current boot.  It changes on every boot, so it
+# tells whether the target has rebooted since a given point.
+target_boot_id() {
+    target_sh 'cat /proc/sys/kernel/random/boot_id' 2>/dev/null || true
+}
+
 # Run a shell command string on the target.
 target_sh() {
     if is_local; then
