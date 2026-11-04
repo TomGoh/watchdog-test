@@ -259,6 +259,12 @@ DEPLOY_ARGS=()
 
 echo
 echo "Running ./scripts/deploy.sh ${DEPLOY_ARGS[*]:-} …"
+# The group runs in a pipeline subshell, so it hands deploy.sh's status
+# back as its own exit code; with `pipefail` that becomes the pipeline's
+# status.  We record it here, still take the post-run snapshots (they're
+# what you want when debugging a failed run), and exit with it at the end
+# so automation never mistakes a failed run for a good archive.
+DEPLOY_RC=0
 {
     echo "=========================================="
     echo "Run kind:    $RUN_KIND"
@@ -266,13 +272,13 @@ echo "Running ./scripts/deploy.sh ${DEPLOY_ARGS[*]:-} …"
     echo "Target:      $TARGET_DESC"
     echo "=========================================="
     echo
-    # Don't let a failing deploy skip the post-run snapshots below.
     rc=0
     ./scripts/deploy.sh ${DEPLOY_ARGS[@]+"${DEPLOY_ARGS[@]}"} 2>&1 || rc=$?
     [ "$rc" -ne 0 ] && echo "deploy.sh exited with status $rc"
     echo
     echo "Finished:    $(date -Iseconds)"
-} | tee "$RUN_DIR/tests.log"
+    exit "$rc"
+} | tee "$RUN_DIR/tests.log" || DEPLOY_RC=$?
 echo "  wrote tests.log"
 
 # ---------------------------------------------------------------------------
@@ -305,5 +311,10 @@ rm -f "$RUN_DIR/PENDING-FINISH"
 capture_post "$RUN_DIR"
 
 echo
-echo "Done — see $RUN_DIR/"
+if [ "$DEPLOY_RC" -ne 0 ]; then
+    echo "FAILED — deploy.sh exited with status $DEPLOY_RC; snapshots kept in $RUN_DIR/" >&2
+else
+    echo "Done — see $RUN_DIR/"
+fi
 ls -lh "$RUN_DIR/"
+exit "$DEPLOY_RC"
