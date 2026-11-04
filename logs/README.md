@@ -26,7 +26,7 @@ logs/<YYYY-MM-DD>-<host-label>-lab-<module-slug>-<HHMM>/  # --lab <module>
 | Component | What it encodes | Examples |
 |---|---|---|
 | `<YYYY-MM-DD>` | Calendar date the run started, build-host local time | `2026-05-16` |
-| `<host-label>` | The `<TARGET>` arg, with `/`, `:`, `.` replaced by `_` | `N80`, `kylin-pc_lan`, `192_0_2_42` |
+| `<host-label>` | The `<TARGET>` arg, with `/`, `:`, `.` replaced by `_`; for a local run (no `<TARGET>`), `hostname -s` | `N80`, `kylin-pc_lan`, `192_0_2_42`, `kylin-pc` |
 | `autonomous` / `lab-<module-slug>` | Run kind.  `autonomous` is the default reboot-safe path; `lab-<slug>` is a `--lab <module>` destructive run. | `autonomous`, `lab-sbsa_gwdt_rust`, `lab-softdog_rust` |
 | `<HHMM>` | Local-time hours and minutes the run started | `0920` |
 
@@ -42,6 +42,7 @@ creates a fresh directory.
 | `tests.log` | full stdout of `./scripts/deploy.sh <TARGET>` (or `… --lab <module>`) | per-test-binary stdout in invocation order, including individual `test foo … ok / FAILED` lines, SKIP markers, and any `# probe:` / `# rust lifecycle:` annotations |
 | `dmesg-post.log` | same sudo dmesg capture and local filter, AFTER the tests finish | the same filter at the end of the run |
 | `dmesg-delta.log` | `diff` of pre vs post | the kernel-log lines added by THIS test run — usually the most interesting view |
+| `dmesg-prevboot.log` | `capture-run.sh --finish` (local lab runs only) | watchdog-related lines of the boot the watchdog reset (`journalctl -k -b -1`); only present when the journal is persistent |
 | `meta-post.txt` | snapshots taken AFTER the run | post-run `lsmod` and `/sys/class/watchdog/*` dump, so you can see what changed (modules loaded, devices appeared/disappeared) |
 
 ## How to read a run

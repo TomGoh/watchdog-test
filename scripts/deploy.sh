@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-2.0
 #
-# Autonomous deploy: SSH to <TARGET>, autodetect arch, autodetect every
-# loadable watchdog driver in the kernel tree, run the appropriate test
-# set against each discovered identity.
+# Autonomous deploy: run on <TARGET> (over SSH) or on THIS machine (no
+# <TARGET> given), autodetect arch, load our watchdog drivers, run the
+# appropriate test set against each discovered identity.
 #
 # Usage:
-#   ./scripts/deploy.sh <TARGET>                  # autonomous, reboot-safe
-#   ./scripts/deploy.sh <TARGET> --lab <module>   # lab validation, single named module
+#   ./scripts/deploy.sh                           # local machine, reboot-safe
+#   ./scripts/deploy.sh --lab <module>            # local machine, lab (REBOOTS this box)
+#   ./scripts/deploy.sh <TARGET>                  # remote over SSH, reboot-safe
+#   ./scripts/deploy.sh <TARGET> --lab <module>   # remote lab validation, single named module
+#
+# Run it as your normal user, not with sudo: it calls sudo itself for the
+# steps that need root (locally it prompts once if NOPASSWD isn't set).
 #
 # The autonomous path:
-#   1. Resolve target arch via `ssh $TARGET uname -m`.
-#   2. Build for that arch if no binaries are cached.
+#   1. Resolve target arch via `uname -m` (over SSH unless local).
+#   2. (Re)build for that arch — incremental, a no-op when nothing changed.
 #   3. Snapshot pre-existing watchdogs (so we know what we loaded vs.
 #      what was already there).
 #   4. Bulk-modprobe every module under
@@ -47,7 +52,7 @@ while [ $# -gt 0 ]; do
             shift 2
             ;;
         --help|-h)
-            sed -n '2,30p' "$0"
+            sed -n '2,37p' "$0"
             exit 0
             ;;
         -*)
@@ -66,12 +71,11 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-if [ -z "$TARGET" ]; then
-    echo "Usage: $0 <TARGET> [--lab <module>]" >&2
-    exit 2
-fi
-
 cd "$(dirname "$0")/.."
+
+# shellcheck source=lib/target.sh
+. scripts/lib/target.sh
+target_ensure_sudo
 
 # ---------------------------------------------------------------------------
 # Per-driver tests table.  Adding a new Rust-port driver = one new
@@ -89,8 +93,9 @@ per_driver_binary_for_identity() {
 # ---------------------------------------------------------------------------
 # Resolve arch from target, build if needed.
 # ---------------------------------------------------------------------------
-echo "Resolving target arch via SSH …"
-REMOTE_UNAME="$(ssh "$TARGET" 'uname -m')"
+echo "Target: $TARGET_DESC"
+echo "Resolving target arch …"
+REMOTE_UNAME="$(target_sh 'uname -m')"
 case "$REMOTE_UNAME" in
     aarch64|arm64) ARCH="aarch64"; TRIPLE="aarch64-unknown-linux-musl" ;;
     x86_64|amd64)  ARCH="x86_64";  TRIPLE="x86_64-unknown-linux-musl"  ;;
@@ -98,10 +103,11 @@ case "$REMOTE_UNAME" in
 esac
 echo "  target arch = $REMOTE_UNAME → $TRIPLE"
 
-BIN_DIR="target/$TRIPLE/release/deps"
-if [ ! -d "$BIN_DIR" ] || [ -z "$(ls -A "$BIN_DIR" 2>/dev/null)" ]; then
-    ./scripts/build.sh "$ARCH"
-fi
+# Always (re)build: cargo is incremental, so this is a ~1 s no-op when
+# nothing changed, and it guarantees we never push binaries that are older
+# than the source tree.  The manifest lists exactly this build's outputs.
+./scripts/build.sh "$ARCH"
+MANIFEST="target/$TRIPLE/wdtest-bins.txt"
 
 # ---------------------------------------------------------------------------
 # Helpers shared by both modes.
@@ -110,16 +116,28 @@ REMOTE_DIR="/tmp/watchdog-test"
 
 push_binaries() {
     local pattern="$1"
-    mapfile -t BINS < <(find "$BIN_DIR" -maxdepth 1 -type f -executable ! -name "*.so" \
-                            -printf '%f\n' | grep -E "$pattern" | sort)
+    BIN_PATHS=()
+    BINS=()
+    local p b
+    while IFS= read -r p; do
+        b="$(basename "$p")"
+        if [[ "$b" =~ $pattern ]]; then
+            BIN_PATHS+=("$p")
+            BINS+=("$b")
+        fi
+    done < <(sort "$MANIFEST")
     if [ "${#BINS[@]}" -eq 0 ]; then
-        echo "No test binaries match pattern $pattern in $BIN_DIR" >&2
+        echo "No test binaries match pattern $pattern in $MANIFEST" >&2
         exit 1
     fi
-    echo "Pushing ${#BINS[@]} binaries to $TARGET:$REMOTE_DIR …"
-    ssh "$TARGET" "mkdir -p $REMOTE_DIR && rm -f $REMOTE_DIR/*"
-    for b in "${BINS[@]}"; do
-        scp -q "$BIN_DIR/$b" "$TARGET:$REMOTE_DIR/$b"
+    echo "Pushing ${#BINS[@]} binaries to $TARGET_DESC:$REMOTE_DIR …"
+    if is_local && [ -e "$REMOTE_DIR" ] && [ ! -w "$REMOTE_DIR" ]; then
+        # Left behind by an earlier run as root (e.g. `sudo ./scripts/...`).
+        $SUDO rm -rf "$REMOTE_DIR"
+    fi
+    target_sh "mkdir -p $REMOTE_DIR && rm -f $REMOTE_DIR/*"
+    for p in "${BIN_PATHS[@]}"; do
+        target_put "$p" "$REMOTE_DIR/$(basename "$p")"
     done
 }
 
@@ -128,8 +146,8 @@ push_binaries() {
 run_binary() {
     local bin="$1" identity="$2" extra_env="${3:-}"
     echo "----- $bin (identity=$identity) -----"
-    ssh -t "$TARGET" \
-        "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }sudo -E $REMOTE_DIR/$bin --test-threads=1 --nocapture --include-ignored" \
+    target_sh_tty \
+        "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }$SUDO_E $REMOTE_DIR/$bin --test-threads=1 --nocapture --include-ignored" \
         || echo "FAILED: $bin (exit $?)"
 }
 
@@ -139,22 +157,27 @@ run_binary() {
 run_binary_test() {
     local bin="$1" identity="$2" test_name="$3" extra_env="${4:-}"
     echo "----- $bin::$test_name (identity=$identity) -----"
-    ssh -t "$TARGET" \
-        "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }sudo -E $REMOTE_DIR/$bin '$test_name' --exact --test-threads=1 --nocapture --include-ignored"
+    target_sh_tty \
+        "WATCHDOG_TEST_IDENTITY='$identity' ${extra_env:+$extra_env }$SUDO_E $REMOTE_DIR/$bin '$test_name' --exact --test-threads=1 --nocapture --include-ignored"
 }
 
 # LAB-01 succeeds by rebooting the target, so the SSH client normally exits
 # with 255 after "Broken pipe".  Treat that disconnect as the expected result
 # and leave post-reboot evidence collection to capture-run.sh.
+# In local mode a successful LAB-01 reboots THIS machine, so this function
+# never returns; any return at all means the watchdog did not fire.
 run_reboot_expected_test() {
     local bin="$1" identity="$2" test_name="$3"
     echo "----- $bin::$test_name (identity=$identity, reboot expected) -----"
+    # The watchdog reset is an emergency restart — nothing gets flushed.
+    # Push everything logged so far (e.g. capture-run's tests.log) to disk.
+    is_local && sync
     set +e
-    ssh -t "$TARGET" \
-        "WATCHDOG_TEST_IDENTITY='$identity' WATCHDOG_LAB_DANGEROUS=YES_REALLY sudo -E $REMOTE_DIR/$bin '$test_name' --exact --test-threads=1 --nocapture --include-ignored"
+    target_sh_tty \
+        "WATCHDOG_TEST_IDENTITY='$identity' WATCHDOG_LAB_DANGEROUS=YES_REALLY $SUDO_E $REMOTE_DIR/$bin '$test_name' --exact --test-threads=1 --nocapture --include-ignored"
     local rc=$?
     set -e
-    if [ "$rc" -eq 255 ]; then
+    if ! is_local && [ "$rc" -eq 255 ]; then
         echo "EXPECTED-REBOOT: $bin::$test_name disconnected SSH (exit 255)"
     elif [ "$rc" -eq 0 ]; then
         echo "FAILED: $bin::$test_name returned normally; expected the target to reboot." >&2
@@ -169,7 +192,7 @@ run_reboot_expected_test() {
 # Returns the basename (e.g. "softdog-9b7…") or empty.
 find_remote_binary() {
     local base="$1"
-    ssh "$TARGET" "ls $REMOTE_DIR/ 2>/dev/null | grep -E '^${base}-' | head -1"
+    target_sh "ls $REMOTE_DIR/ 2>/dev/null | grep -E '^${base}-' | head -1"
 }
 
 # ---------------------------------------------------------------------------
@@ -179,7 +202,7 @@ if [ -n "$LAB_MODULE" ]; then
     cat <<EOF
 
 ================================================================================
-  ATTENTION — LAB MODE will load $LAB_MODULE on $TARGET and run lab checks
+  ATTENTION — LAB MODE will load $LAB_MODULE on $TARGET_DESC and run lab checks
   against its watchdog.  It runs the non-rebooting Magic-V check first, then
   the no-ping reboot check.  The final check may REBOOT the machine when the
   watchdog fires correctly.
@@ -195,13 +218,13 @@ EOF
     # where the platform watchdog (sp5100_tco/iTCO/sbsa_gwdt) is
     # already auto-probed at boot — without this diff, the resolver
     # would mis-target the pre-existing platform watchdog.
-    LAB_IDENTITY="$(ssh "$TARGET" "
+    LAB_IDENTITY="$(target_sh "
         pre=\$(mktemp)
         post=\$(mktemp)
         trap 'rm -f \$pre \$post' EXIT
         ls -1 /sys/class/watchdog/ 2>/dev/null | sort -u >\$pre
         echo 'Loading kernel module $LAB_MODULE …' >&2
-        sudo modprobe $LAB_MODULE || exit 11
+        $SUDO modprobe $LAB_MODULE || exit 11
         sleep 1
         ls -1 /sys/class/watchdog/ 2>/dev/null | sort -u >\$post
         new=\$(comm -13 \$pre \$post)
@@ -274,7 +297,7 @@ fi
 # Snapshot pre-existing watchdog identities so cleanup knows what to
 # leave alone.
 echo "Enumerating pre-existing watchdogs …"
-PRE_EXISTING="$(ssh "$TARGET" '
+PRE_EXISTING="$(target_sh '
     for f in /sys/class/watchdog/*/identity; do
         [ -e "$f" ] && cat "$f"
     done 2>/dev/null
@@ -282,7 +305,7 @@ PRE_EXISTING="$(ssh "$TARGET" '
 echo "  before modprobe: $(echo "$PRE_EXISTING" | tr '\n' ',' | sed 's/,$//' | sed 's/^$/<none>/')"
 
 # Snapshot loaded modules so cleanup knows what to leave alone.
-PRE_LOADED_MODULES="$(ssh "$TARGET" 'lsmod | awk "NR>1 {print \$1}"' || true)"
+PRE_LOADED_MODULES="$(target_sh 'lsmod | awk "NR>1 {print \$1}"' || true)"
 
 # Modprobe only the modules we have first-class tests for.  The
 # previous design bulk-loaded everything under
@@ -315,7 +338,7 @@ esac
 echo "Loading our managed watchdog drivers (nowayout=0, arch=$ARCH): $MODULES_TO_LOAD"
 MODULES_LOADED_BY_US=""
 for mod in $MODULES_TO_LOAD; do
-    if ssh "$TARGET" "sudo modprobe $mod nowayout=0 2>/dev/null"; then
+    if target_sh "$SUDO modprobe $mod nowayout=0 2>/dev/null"; then
         echo "  modprobe $mod nowayout=0"
         mod_lsmod="${mod//-/_}"
         if ! grep -qx "$mod_lsmod" <<< "$PRE_LOADED_MODULES"; then
@@ -329,7 +352,7 @@ sleep 1
 
 # Re-enumerate to get the authoritative test list.
 echo "Re-enumerating /sys/class/watchdog after bulk modprobe …"
-IDENTITIES_RAW="$(ssh "$TARGET" '
+IDENTITIES_RAW="$(target_sh '
     for f in /sys/class/watchdog/*/identity; do
         [ -e "$f" ] && cat "$f"
     done 2>/dev/null
@@ -399,9 +422,9 @@ if [ -n "$MODULES_LOADED_BY_US" ]; then
     echo "Cleanup: rmmod modules loaded by this run:"
     while IFS= read -r mod; do
         [ -z "$mod" ] && continue
-        if ! ssh "$TARGET" "lsmod | awk 'NR>1 {print \$1}' | grep -qx '$mod'"; then
+        if ! target_sh "lsmod | awk 'NR>1 {print \$1}' | grep -qx '$mod'"; then
             echo "  $mod already unloaded"
-        elif ssh "$TARGET" "sudo rmmod $mod 2>/dev/null"; then
+        elif target_sh "$SUDO rmmod $mod 2>/dev/null"; then
             echo "  rmmod $mod"
         else
             echo "  rmmod $mod failed (still in use? — left loaded)"

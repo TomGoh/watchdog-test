@@ -67,6 +67,7 @@ works on your build host, the test scripts will work too.
 - [What you need](#what-you-need)
 - [How it's structured](#how-its-structured)
 - [Testing guide](TESTING_GUIDE.md)
+- [Running on this machine (no SSH)](#running-on-this-machine-no-ssh)
 - [Quick start](#quick-start)
   - [1. Build the test binaries](#1-build-the-test-binaries)
   - [2. Set up SSH access to your target](#2-set-up-ssh-access-to-your-target)
@@ -127,6 +128,44 @@ watchdog-test/
 
 ---
 
+## Running on this machine (no SSH)
+
+If the machine you're sitting at **is** the target (it runs the kernel
+under test and has `/dev/watchdog*`), leave out `<TARGET>`.  Then the
+scripts run everything directly: no `sshd`, no SSH keys, no `scp`.
+
+```bash
+./scripts/capture-run.sh                     # archived autonomous run on this machine
+./scripts/deploy.sh                          # same tests, no archiving
+./scripts/capture-run.sh --lab softdog-rust  # lab run — REBOOTS this machine
+```
+
+- Run them as your **normal user, not with `sudo`**.  They call `sudo`
+  themselves for `modprobe` / `rmmod` / the test binaries / `dmesg`, and
+  prompt once up front if `NOPASSWD` isn't configured.  Under
+  `sudo ./scripts/...` the build usually fails because root has no
+  `cargo`, and every file the run creates ends up owned by root.
+  (If you really are root, local mode works without sudo installed.)
+- The run directory is named after `hostname -s`, e.g.
+  `logs/2026-11-04-kylin-pc-autonomous-0930/`.
+- **Local lab runs can't finish by themselves.**  When the watchdog
+  fires, the machine resets and `capture-run.sh` dies with it.  While
+  the test runs, `tests.log` is flushed to disk every second.  After the
+  machine boots back up, complete the record with:
+  ```bash
+  ./scripts/capture-run.sh --finish logs/<that-run-dir>
+  ```
+  This writes `dmesg-post.log` / `dmesg-delta.log` / `meta-post.txt`.
+  If the systemd journal is persistent, it also writes
+  `dmesg-prevboot.log`: the kernel log of the boot the watchdog ended
+  (`journalctl -k -b -1`).  Until you run it, the directory contains a
+  `PENDING-FINISH` file as a reminder.
+
+`<TARGET>` = `localhost` / `127.0.0.1` still works too: that goes
+through SSH as before.
+
+---
+
 ## Quick start
 
 The placeholder `<TARGET>` below stands for whatever **your** SSH
@@ -135,9 +174,12 @@ etc.) — see [SSH setup](#2-set-up-ssh-access-to-your-target) below.
 
 ### 1. (Optional) Pre-install the rustup target
 
-The deploy script autodetects the target arch over SSH and triggers a
-build automatically if no cached binaries exist.  You only need this
-step if you want to pre-warm the build:
+The deploy script autodetects the target arch and (re)builds for it
+on every run.  The build is incremental, so if nothing changed it
+takes about a second.  It pushes only the binaries listed in
+`target/<triple>/wdtest-bins.txt`, which comes from the current build,
+never stale `deps/*-<oldhash>` leftovers.  You only need this step if
+you want to pre-warm the build:
 
 ```bash
 rustup target add aarch64-unknown-linux-musl   # for ARM64 boards
@@ -286,6 +328,7 @@ What ends up inside each run dir:
 | `dmesg-pre.log` | watchdog-relevant `sudo -n dmesg` lines BEFORE the run |
 | `dmesg-post.log` | same sudo dmesg filter AFTER the run |
 | `dmesg-delta.log` | the diff — kernel-log lines this specific run caused |
+| `dmesg-prevboot.log` | local lab runs only, written by `--finish`: kernel log of the boot the watchdog reset |
 | `tests.log` | full stdout from `deploy.sh` (one section per discovered identity) |
 
 Older runs are never overwritten — every `capture-run.sh` invocation
